@@ -5,7 +5,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v1.0.4] - 2026-02-28
+## v1.0.4 - 2026-02-28
 
 ### Añadido
 
@@ -33,7 +33,7 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.
 - Estabilidad general y manejo de excepciones en la carga de recursos.
 - Feedback visual en la ventana de configuración.
 
-## [v1.0.2] - 2026-02-28
+## v1.0.2 - 2026-02-28
 
 ### Añadido
 
@@ -50,7 +50,7 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.
 - **Error de Compilación XAML**: Eliminación de propiedades no soportadas (`LetterSpacing`) que impedían el build.
 - **Advertencias de Código**: Limpieza de advertencias `async` innecesarias en `MainWindow.xaml.cs`.
 
-## [v1.0.0] - 2026-02-28
+## v1.0.0 - 2026-02-28
 
 ### Añadido
 
