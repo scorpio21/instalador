@@ -1,20 +1,40 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Instalador.Models
 {
-    public class ProyectoConfig
+    public class ProyectoConfig : INotifyPropertyChanged
     {
-        public string Nombre { get; set; } = "";
-        public string RutaProyecto { get; set; } = "";
-        public string RutaPublicacion { get; set; } = "";
-        public string VersionInstalador { get; set; } = "1.0";
-        public bool ReadyToRun { get; set; } = true;
-        public bool Trimmed { get; set; } = false;
-        public bool Compressed { get; set; } = true;
+        private string _nombre = "";
+        private string _rutaProyecto = "";
+        private string _rutaPublicacion = "";
+        private string _versionInstalador = "1.0";
+        private bool _readyToRun = true;
+        private bool _trimmed = false;
+        private bool _compressed = true;
+
+        public string Nombre { get => _nombre; set => SetField(ref _nombre, value); }
+        public string RutaProyecto { get => _rutaProyecto; set => SetField(ref _rutaProyecto, value); }
+        public string RutaPublicacion { get => _rutaPublicacion; set => SetField(ref _rutaPublicacion, value); }
+        public string VersionInstalador { get => _versionInstalador; set => SetField(ref _versionInstalador, value); }
+        public bool ReadyToRun { get => _readyToRun; set => SetField(ref _readyToRun, value); }
+        public bool Trimmed { get => _trimmed; set => SetField(ref _trimmed, value); }
+        public bool Compressed { get => _compressed; set => SetField(ref _compressed, value); }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(name!);
+            return true;
+        }
     }
 
     public class Config

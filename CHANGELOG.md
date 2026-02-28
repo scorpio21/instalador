@@ -4,6 +4,12 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
+## v1.1.1 - 2026-03-01
+
+### 🐛 Corregido
+
+- **Sincronización de UI**: Los campos de ruta ahora se actualizan instantáneamente al elegir una carpeta mediante el diálogo de selección (implementado `INotifyPropertyChanged`).
+
 ## v1.1.0 - 2026-02-28
 
 ### ✨ Añadido (Power User Update)
