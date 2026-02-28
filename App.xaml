@@ -1,8 +1,9 @@
 <Application x:Class="Instalador.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+             xmlns:helpers="clr-namespace:Instalador.Helpers"
+             StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
+        <helpers:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <!-- Forzar colores oscuros globales -->
         <SolidColorBrush x:Key="PrimaryBlue" Color="#007ACC"/>
         <SolidColorBrush x:Key="DarkBg" Color="#181818"/>
