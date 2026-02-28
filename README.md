@@ -16,8 +16,9 @@ Este ecosistema automatiza tareas repetitivas y críticas de despliegue, elimina
 * **📦 Empaquetado Multiformato**:
   * **Single-File**: Compresión de dependencias en un único binario ejecutable.
   * **Portable ZIP**: Generación de paquetes de distribución sin instalador.
-  * **Inno Setup Engine**: Integración nativa con `ISCC.exe` para generar instaladores MSI-style.
-* **🖥️ Monitorización en Tiempo Real**: Consola integrada con feedback visual de procesos críticos.
+  * **Inno Setup Engine**: Integración nativa con auto-detección de `ISCC.exe` para generar instaladores.
+* **🖥️ Monitorización y Persistencia**: Consola integrada con feedback visual y guardado automático de historial en la carpeta `/logs`.
+* **✅ Validación Inteligente**: Sistema de validación de rutas en tiempo real con indicadores visuales de estado (Código de colores).
 
 ---
 

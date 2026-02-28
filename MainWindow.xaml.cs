@@ -48,9 +48,21 @@ namespace Instalador
         {
             Dispatcher.Invoke(() =>
             {
-                LogEntries.Add(new LogEntry { Hora = DateTime.Now.ToString("HH:mm:ss"), Mensaje = mensaje });
+                string hora = DateTime.Now.ToString("HH:mm:ss");
+                LogEntries.Add(new LogEntry { Hora = hora, Mensaje = mensaje });
                 if (LogEntries.Count > 0)
                     LvLog.ScrollIntoView(LogEntries[LogEntries.Count - 1]);
+
+                // Guardar en archivo de log persistente
+                try
+                {
+                    string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
+                    if (!Directory.Exists(logDir)) Directory.CreateDirectory(logDir);
+                    
+                    string logFile = Path.Combine(logDir, $"log_{DateTime.Now:yyyyMMdd}.txt");
+                    File.AppendAllLines(logFile, new[] { $"[{hora}] {mensaje}" });
+                }
+                catch { /* Ignorar errores de escritura de log para no bloquear la UI */ }
             });
         }
 

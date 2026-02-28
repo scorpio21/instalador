@@ -23,7 +23,73 @@ namespace Instalador
             TxtVersion.Text = config.VersionInstalador;
             TxtRutaProyecto.Text = config.RutaProyecto;
             TxtRutaPublicacion.Text = config.RutaPublicacion;
-            TxtRutaInnoSetup.Text = config.RutaInnoSetup;
+
+            if (string.IsNullOrWhiteSpace(config.RutaInnoSetup))
+            {
+                TxtRutaInnoSetup.Text = DetectarInnoSetup();
+            }
+            else
+            {
+                TxtRutaInnoSetup.Text = config.RutaInnoSetup;
+            }
+            
+            ValidarTodasLasRutas();
+        }
+
+        private string DetectarInnoSetup()
+        {
+            string[] rutasComunes = {
+                @"C:\Program Files (x86)\Inno Setup 6\ISCC.exe",
+                @"C:\Program Files\Inno Setup 6\ISCC.exe",
+                @"C:\Program Files (x86)\Inno Setup 5\ISCC.exe"
+            };
+
+            foreach (var ruta in rutasComunes)
+            {
+                if (File.Exists(ruta)) return ruta;
+            }
+            return "";
+        }
+
+        private void TxtRuta_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (sender is System.Windows.Controls.TextBox tb)
+            {
+                ValidarRuta(tb);
+            }
+        }
+
+        private void ValidarTodasLasRutas()
+        {
+            ValidarRuta(TxtRutaProyecto);
+            ValidarRuta(TxtRutaPublicacion);
+            ValidarRuta(TxtRutaInnoSetup);
+        }
+
+        private void ValidarRuta(System.Windows.Controls.TextBox tb)
+        {
+            string path = tb.Text;
+            bool esValido = false;
+
+            if (tb == TxtRutaInnoSetup)
+            {
+                esValido = File.Exists(path) && path.EndsWith("ISCC.exe", StringComparison.OrdinalIgnoreCase);
+            }
+            else
+            {
+                esValido = Directory.Exists(path) || File.Exists(path);
+            }
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                tb.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["BorderBrush"];
+            }
+            else
+            {
+                tb.BorderBrush = esValido ? 
+                    new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(40, 167, 69)) : // Verde
+                    new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 53, 69));   // Rojo
+            }
         }
 
         private void BtnBuscarProyecto_Click(object sender, RoutedEventArgs e)

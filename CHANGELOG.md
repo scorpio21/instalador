@@ -5,6 +5,20 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.0.3 - 2026-02-28
+
+### Añadido
+
+- **Auto-detección de Inno Setup**: El programa ahora busca automáticamente `ISCC.exe` en rutas estándar de Windows.
+- **Validación en Tiempo Real**: Los campos de ruta en la ventana de configuración ahora muestran un borde **Verde** (Válido) o **Rojo** (Inválido) mientras escribes.
+- **Sistema de Logs Persistentes**: Toda la actividad del programa se guarda ahora automáticamente en archivos `.txt` dentro de la carpeta `/logs`.
+- **Iconografía Profesional**: Los iconos de las ventanas ahora usan un sistema de carga robusto (Pack URIs) para evitar fallos de inicio.
+
+### Mejorado
+
+- Estabilidad general y manejo de excepciones en la carga de recursos.
+- Feedback visual en la ventana de configuración.
+
 ## v1.0.2 - 2026-02-28
 
 ### Added

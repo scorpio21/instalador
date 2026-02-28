@@ -54,7 +54,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="TxtRutaProyecto" Height="35"/>
+                        <TextBox x:Name="TxtRutaProyecto" Height="35" TextChanged="TxtRuta_TextChanged"/>
                         <Button Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource SecondaryButton}" Click="BtnBuscarProyecto_Click" Width="90">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource IconZip}" Fill="White" Width="10" Height="10" Stretch="Uniform" Margin="0,0,5,0"/>
@@ -75,7 +75,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="TxtRutaPublicacion" Height="35"/>
+                        <TextBox x:Name="TxtRutaPublicacion" Height="35" TextChanged="TxtRuta_TextChanged"/>
                         <Button Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource SecondaryButton}" Click="BtnBuscarPublicacion_Click" Width="90">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource IconExport}" Fill="White" Width="10" Height="10" Stretch="Uniform" Margin="0,0,5,0"/>
@@ -96,7 +96,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="TxtRutaInnoSetup" Height="35"/>
+                        <TextBox x:Name="TxtRutaInnoSetup" Height="35" TextChanged="TxtRuta_TextChanged"/>
                         <Button Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource SecondaryButton}" Click="BtnBuscarInno_Click" Width="90">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource IconUtilidades}" Fill="White" Width="10" Height="10" Stretch="Uniform" Margin="0,0,5,0"/>
