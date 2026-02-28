@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Generador de Instalación Premium" Height="650" Width="1000"
+        Title="Generador de Instalación Premium" Height="650" Width="1100"
         Background="#1E1E1E" Foreground="White"
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI"
@@ -94,8 +94,8 @@
                 <MenuItem x:Name="MenuLimpiar" Click="BtnLimpiar_Click">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource IconLimpiar}" Style="{StaticResource MenuIconPath}"/>
-                            <TextBlock Text="Limpiar publish" VerticalAlignment="Center"/>
+                            <Path x:Name="IconLimpiarFlash" Data="{StaticResource IconLimpiar}" Style="{StaticResource MenuIconPath}"/>
+                            <TextBlock Text="Limpiar" VerticalAlignment="Center"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -104,7 +104,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Proyecto:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <ComboBox x:Name="ComboProyectos" Width="180" VerticalContentAlignment="Center" Background="Transparent" Foreground="White" BorderThickness="0" Margin="5,0" SelectionChanged="ComboProyectos_SelectionChanged">
+                            <ComboBox x:Name="ComboProyectos" Width="150" VerticalContentAlignment="Center" Background="Transparent" Foreground="White" BorderThickness="0" Margin="5,0" SelectionChanged="ComboProyectos_SelectionChanged">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -120,7 +120,7 @@
 
                 <MenuItem x:Name="MenuCombo">
                     <MenuItem.Header>
-                        <ComboBox x:Name="ComboConfig" Width="120" VerticalContentAlignment="Center" Background="Transparent" Foreground="White" BorderThickness="0" Margin="5,0">
+                        <ComboBox x:Name="ComboConfig" Width="100" VerticalContentAlignment="Center" Background="Transparent" Foreground="White" BorderThickness="0" Margin="5,0">
                             <ComboBoxItem IsSelected="True">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconPlay}" Fill="White" Width="12" Height="12" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -141,7 +141,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <Path Data="{StaticResource IconConfig}" Style="{StaticResource MenuIconPath}"/>
-                            <TextBlock Text="Configuración" VerticalAlignment="Center"/>
+                            <TextBlock Text="Config" VerticalAlignment="Center"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
