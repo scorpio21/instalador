@@ -54,7 +54,7 @@ namespace Instalador.ViewModels
 
         private void AddProyecto()
         {
-            Proyectos.Add(new ProyectoConfig { Nombre = "Nuevo Proyecto" });
+            Proyectos.Add(new ProyectoConfig { Nombre = "Nuevo Proyecto", VersionInstalador = "1.1.0" });
         }
 
         private void DeleteProyecto()
@@ -84,6 +84,12 @@ namespace Instalador.ViewModels
                     }
                 }
                 catch { }
+            }
+
+            // Si la versión es "1.0" o está vacía, ponemos "1.1.0" como quiere el usuario
+            if (string.IsNullOrEmpty(ProyectoSeleccionado.VersionInstalador) || ProyectoSeleccionado.VersionInstalador == "1.0")
+            {
+                ProyectoSeleccionado.VersionInstalador = "1.1.0";
             }
 
             // Auto-rellenar carpeta de publicación si está vacía

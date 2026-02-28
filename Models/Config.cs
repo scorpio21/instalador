@@ -13,7 +13,7 @@ namespace Instalador.Models
         private string _nombre = "";
         private string _rutaProyecto = "";
         private string _rutaPublicacion = "";
-        private string _versionInstalador = "1.0";
+        private string _versionInstalador = "1.1.0";
         private bool _readyToRun = true;
         private bool _trimmed = false;
         private bool _compressed = true;
