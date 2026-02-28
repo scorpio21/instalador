@@ -21,6 +21,9 @@ namespace Instalador.ViewModels
             GuardarCommand = new RelayCommand(_ => Guardar());
             AddCommand = new RelayCommand(_ => AddProyecto());
             DeleteCommand = new RelayCommand(_ => DeleteProyecto());
+            DetectCommand = new RelayCommand(_ => DetectarInno());
+
+            if (string.IsNullOrEmpty(RutaInnoSetup)) DetectarInno();
         }
 
         public ObservableCollection<ProyectoConfig> Proyectos { get; }
@@ -40,6 +43,7 @@ namespace Instalador.ViewModels
         public ICommand GuardarCommand { get; }
         public ICommand AddCommand { get; }
         public ICommand DeleteCommand { get; }
+        public ICommand DetectCommand { get; }
 
         private void Guardar()
         {
@@ -56,6 +60,12 @@ namespace Instalador.ViewModels
         private void DeleteProyecto()
         {
             if (ProyectoSeleccionado != null) Proyectos.Remove(ProyectoSeleccionado);
+        }
+
+        private void DetectarInno()
+        {
+            string ruta = _configService.DetectarInnoSetup();
+            if (!string.IsNullOrEmpty(ruta)) RutaInnoSetup = ruta;
         }
     }
 }

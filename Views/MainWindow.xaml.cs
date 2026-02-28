@@ -10,7 +10,7 @@ namespace Instalador.Views
 {
     public partial class MainWindow : Window
     {
-        public const string AppVersion = "1.0.6";
+        public const string AppVersion = "1.1.0";
         private MainViewModel _viewModel;
         private DispatcherTimer timerHora = new DispatcherTimer();
 
@@ -22,8 +22,9 @@ namespace Instalador.Views
             var gitService = new GitService();
             var buildService = new BuildService();
             var innoService = new InnoSetupService();
+            var notificationService = new NotificationService();
 
-            _viewModel = new MainViewModel(configService, gitService, buildService, innoService);
+            _viewModel = new MainViewModel(configService, gitService, buildService, innoService, notificationService);
             this.DataContext = _viewModel;
 
             timerHora.Interval = TimeSpan.FromSeconds(1);

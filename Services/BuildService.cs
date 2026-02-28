@@ -1,12 +1,14 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Instalador.Models;
 
 namespace Instalador.Services
 {
     public interface IBuildService
     {
         Task<bool> RunCommandAsync(string fileName, string args, string workingDir, Action<string> onLineReceived);
+        Task RunPublishAsync(ProyectoConfig proyecto, Action<string> onLog);
     }
 
     public class BuildService : IBuildService
@@ -45,6 +47,19 @@ namespace Instalador.Services
                     return false;
                 }
             });
+        }
+
+        public async Task RunPublishAsync(ProyectoConfig p, Action<string> onLog)
+        {
+            string outputDir = p.RutaPublicacion;
+            string flags = "-r win-x64 --self-contained true /p:PublishSingleFile=true";
+            
+            if (p.ReadyToRun) flags += " /p:PublishReadyToRun=true";
+            if (p.Trimmed) flags += " /p:PublishTrimmed=true";
+            if (p.Compressed) flags += " /p:EnableCompressionInSingleFile=true";
+
+            string args = $"publish -c Release -o \"{outputDir}\" {flags}";
+            await RunCommandAsync("dotnet", args, p.RutaProyecto, onLog);
         }
     }
 }

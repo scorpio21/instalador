@@ -16,6 +16,7 @@ namespace Instalador.ViewModels
         private readonly IGitService _gitService;
         private readonly IBuildService _buildService;
         private readonly IInnoSetupService _innoService;
+        private readonly INotificationService _notificationService;
 
         private Config _config;
         private ProyectoConfig? _proyectoSeleccionado;
@@ -23,12 +24,13 @@ namespace Instalador.ViewModels
         private bool _hasGitChanges;
         private bool _isProjectReady;
 
-        public MainViewModel(IConfigService configService, IGitService gitService, IBuildService buildService, IInnoSetupService innoService)
+        public MainViewModel(IConfigService configService, IGitService gitService, IBuildService buildService, IInnoSetupService innoService, INotificationService notificationService)
         {
             _configService = configService;
             _gitService = gitService;
             _buildService = buildService;
             _innoService = innoService;
+            _notificationService = notificationService;
 
             _config = _configService.CargarConfig();
             _proyectoSeleccionado = _configService.GetProyectoActual(_config);
@@ -127,8 +129,8 @@ namespace Instalador.ViewModels
         private async Task EjecutarPublish()
         {
             if (ProyectoSeleccionado == null) return;
-            AddLog("Publicando proyecto...");
-            await _buildService.RunCommandAsync("dotnet", $"publish -c Release -o \"{ProyectoSeleccionado.RutaPublicacion}\"", ProyectoSeleccionado.RutaProyecto, AddLog);
+            AddLog("Publicando proyecto (flags avanzados)...");
+            await _buildService.RunPublishAsync(ProyectoSeleccionado, AddLog);
         }
 
         private async Task EjecutarZip()
@@ -145,6 +147,7 @@ namespace Instalador.ViewModels
             AddLog("Generando instalador...");
             _innoService.GenerarScript(ProyectoSeleccionado, Path.Combine(ProyectoSeleccionado.RutaProyecto, "installer.iss"));
             AddLog("Script .iss generado. Inicie ISCC.exe para finalizar.");
+            _notificationService.Notify("Instalador Generado", $"El script para {ProyectoSeleccionado.Nombre} está listo.");
             await Task.CompletedTask;
         }
 
@@ -154,6 +157,7 @@ namespace Instalador.ViewModels
             await EjecutarBuild();
             await EjecutarPublish();
             await EjecutarInstaller();
+            _notificationService.Notify("Proceso Completado", "Todas las tareas han finalizado con éxito.");
         }
 
         public void AddLog(string mensaje)

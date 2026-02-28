@@ -7,5 +7,6 @@ namespace Instalador.Services
         Config CargarConfig();
         void GuardarConfig(Config config);
         ProyectoConfig? GetProyectoActual(Config config);
+        string DetectarInnoSetup();
     }
 }

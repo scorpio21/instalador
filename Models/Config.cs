@@ -12,6 +12,9 @@ namespace Instalador.Models
         public string RutaProyecto { get; set; } = "";
         public string RutaPublicacion { get; set; } = "";
         public string VersionInstalador { get; set; } = "1.0";
+        public bool ReadyToRun { get; set; } = true;
+        public bool Trimmed { get; set; } = false;
+        public bool Compressed { get; set; } = true;
     }
 
     public class Config
