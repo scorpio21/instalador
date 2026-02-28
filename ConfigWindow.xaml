@@ -7,7 +7,7 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         WindowStyle="ThreeDBorderWindow"
-        Icon="img\ico\Installer.ico">
+        Icon="pack://application:,,,/img/ico/Installer.ico">
 
     <Grid Margin="25">
         <Grid.RowDefinitions>

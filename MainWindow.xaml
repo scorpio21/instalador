@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI"
         AllowsTransparency="False" WindowStyle="ThreeDBorderWindow"
-        Icon="img\ico\Installer.ico">
+        Icon="pack://application:,,,/img/ico/Installer.ico">
 
 
     <Grid>
