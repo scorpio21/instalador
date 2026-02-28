@@ -71,25 +71,34 @@ namespace Instalador
             string path = tb.Text;
             bool esValido = false;
 
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                tb.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["BorderBrush"];
+                return;
+            }
+
             if (tb == TxtRutaInnoSetup)
             {
                 esValido = File.Exists(path) && path.EndsWith("ISCC.exe", StringComparison.OrdinalIgnoreCase);
+            }
+            else if (tb == TxtRutaPublicacion)
+            {
+                // El directorio de salida puede no existir, así que lo marcamos como válido 
+                // si la ruta tiene un formato correcto (simplemente comprobamos que no sea vacía)
+                // O mejor: comprobamos que el directorio padre existe.
+                try {
+                    string parent = Path.GetDirectoryName(path) ?? "";
+                    esValido = string.IsNullOrEmpty(parent) || Directory.Exists(parent) || Directory.Exists(path);
+                } catch { esValido = false; }
             }
             else
             {
                 esValido = Directory.Exists(path) || File.Exists(path);
             }
 
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                tb.BorderBrush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["BorderBrush"];
-            }
-            else
-            {
-                tb.BorderBrush = esValido ? 
-                    new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(40, 167, 69)) : // Verde
-                    new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 53, 69));   // Rojo
-            }
+            tb.BorderBrush = esValido ? 
+                new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(40, 167, 69)) : // Verde
+                new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 53, 69));   // Rojo
         }
 
         private void BtnBuscarProyecto_Click(object sender, RoutedEventArgs e)
