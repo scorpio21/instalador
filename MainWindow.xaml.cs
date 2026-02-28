@@ -36,6 +36,8 @@ namespace Instalador
             timerReloj.Tick += (s, e) => TxtTiempo.Text = "Tiempo: " + cronometro.Elapsed.ToString(@"mm\:ss");
 
             ComboConfig.SelectedIndex = 0; // Release
+
+            ActualizarEstadoGit();
         }
 
         private void CargarConfig()
@@ -63,6 +65,7 @@ namespace Instalador
                 config.UltimoProyectoSeleccionado = p.Nombre;
                 config.Guardar();
                 Log($"Cambiado al proyecto: {p.Nombre}");
+                ActualizarEstadoGit();
             }
         }
 
@@ -427,7 +430,92 @@ namespace Instalador
             if (cfg.ShowDialog() == true)
             {
                 CargarConfig();
+                ActualizarEstadoGit();
             }
+        }
+
+        // --- Lógica de Git y Ayuda ---
+
+        private async void ActualizarEstadoGit()
+        {
+            var p = config.GetProyectoActual();
+            if (p == null || !Directory.Exists(Path.Combine(p.RutaProyecto, ".git")))
+            {
+                TxtGitBranch.Text = "No es un repo Git";
+                DotGitChanges.Fill = System.Windows.Media.Brushes.Gray;
+                DotGitChanges.Visibility = System.Windows.Visibility.Visible;
+                return;
+            }
+
+            try
+            {
+                string branch = await Task.Run(() => RunSilentProcess("git", "branch --show-current", p.RutaProyecto).Trim());
+                string status = await Task.Run(() => RunSilentProcess("git", "status --porcelain", p.RutaProyecto).Trim());
+
+                TxtGitBranch.Text = $"Rama: {branch}";
+                
+                if (string.IsNullOrWhiteSpace(status))
+                {
+                    DotGitChanges.Fill = System.Windows.Media.Brushes.LightGreen;
+                }
+                else
+                {
+                    DotGitChanges.Fill = System.Windows.Media.Brushes.Orange;
+                }
+                DotGitChanges.Visibility = System.Windows.Visibility.Visible;
+            }
+            catch { TxtGitBranch.Text = "Error Git"; }
+        }
+
+        private string RunSilentProcess(string fileName, string args, string workingDir)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = fileName,
+                    Arguments = args,
+                    WorkingDirectory = workingDir,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var p = Process.Start(psi);
+                string output = p?.StandardOutput.ReadToEnd() ?? "";
+                p?.WaitForExit();
+                return output;
+            }
+            catch { return ""; }
+        }
+
+        private void GitStatus_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ActualizarEstadoGit();
+            Log("[INFO] Estado de Git actualizado.");
+        }
+
+        private void MenuInstrucciones_Click(object sender, RoutedEventArgs e)
+        {
+            string msg = "MANUAL DE USO RÁPIDO:\n\n" +
+                         "1. Selecciona tu proyecto en el selector superior.\n" +
+                         "2. Usa 'Limpiar publish' para preparar el entorno.\n" +
+                         "3. 'Compilar' verifica que el código sea correcto.\n" +
+                         "4. 'Publicar' genera el Single-File y copia recursos (img, README).\n" +
+                         "5. 'Generar Instalador' crea el setup final con Inno Setup.\n" +
+                         "6. 'EJECUTAR TODO' automatiza todo el flujo en un clic.\n\n" +
+                         "Tip: El punto naranja en la barra inferior indica cambios pendientes en Git.";
+            System.Windows.MessageBox.Show(msg, "Instrucciones", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void MenuAutor_Click(object sender, RoutedEventArgs e)
+        {
+            try { Process.Start(new ProcessStartInfo("https://github.com/scorpio21") { UseShellExecute = true }); }
+            catch { System.Windows.MessageBox.Show("No se pudo abrir el navegador."); }
+        }
+
+        private void MenuAcercaDe_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.MessageBox.Show("Instalador PRO v1.0.5\nDesarrollado para Scorpio 2026\n\nHerramienta profesional de empaquetado y automatización de procesos .NET.", "Acerca de", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 

@@ -22,6 +22,8 @@ Este ecosistema automatiza tareas repetitivas y críticas de despliegue, elimina
   * **Inno Setup Engine**: Integración nativa con auto-detección de `ISCC.exe` para generar instaladores.
 * **🖥️ Monitorización y Persistencia**: Consola integrada con feedback visual y guardado automático de historial en la carpeta `/logs`.
 * **✅ Validación Inteligente**: Sistema de validación de rutas en tiempo real con indicadores visuales de estado (Código de colores).
+* **🔗 Ecosistema Git Integrado**: Monitorización en tiempo real de la rama actual y estado de cambios pendientes directamente desde el footer de la aplicación.
+* **❓ Centro de Ayuda**: Sistema de documentación integrada con guías rápidas y acceso directo a soporte del autor.
 
 ---
 

@@ -145,6 +145,32 @@
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
+
+                <!-- Ayuda -->
+                <MenuItem x:Name="MenuAyuda">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconUtilidades}" Fill="White" Width="12" Height="12" Stretch="Uniform" Margin="0,0,8,0"/>
+                            <TextBlock Text="Ayuda" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
+                    <MenuItem Header="Manual de uso" Click="MenuInstrucciones_Click">
+                        <MenuItem.Icon>
+                            <Path Data="{StaticResource IconArchivo}" Fill="White" Width="12" Height="12" Stretch="Uniform"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Visitar Autor" Click="MenuAutor_Click">
+                        <MenuItem.Icon>
+                            <Path Data="{StaticResource IconExport}" Fill="White" Width="12" Height="12" Stretch="Uniform"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator Background="#20FFFFFF"/>
+                    <MenuItem Header="Acerca de..." Click="MenuAcercaDe_Click">
+                        <MenuItem.Icon>
+                            <Path Data="{StaticResource IconConfig}" Fill="White" Width="12" Height="12" Stretch="Uniform"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
             </Menu>
         </Border>
 
@@ -158,24 +184,32 @@
             </ListView.View>
         </ListView>
 
-        <!-- BOTTOM STATUS -->
-        <Border Grid.Row="2" Background="#007ACC" Padding="10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Tiempo:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock x:Name="TxtTiempo" Text="00:00" VerticalAlignment="Center"/>
+        <!-- FOOTER / GIT STATUS -->
+        <StatusBar Grid.Row="2" Background="#007ACC" Foreground="White" BorderThickness="0,1,0,0" BorderBrush="#33FFFFFF">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal" Margin="5,0" Cursor="Hand" MouseLeftButtonDown="GitStatus_Click" ToolTip="Refrescar estado de Git">
+                    <Path x:Name="IconGit" Data="{StaticResource IconZip}" Fill="White" Width="12" Height="12" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtGitBranch" Text="Git: Desconocido" VerticalAlignment="Center" FontSize="11"/>
+                    <Ellipse x:Name="DotGitChanges" Width="6" Height="6" Fill="#FFB900" Margin="8,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
                 </StackPanel>
+            </StatusBarItem>
+            
+            <Separator Background="#33FFFFFF"/>
 
-                <ProgressBar Grid.Column="1" x:Name="ProgressTotal" Height="15" Margin="20,0" Background="#333333" Foreground="#4EC9B0" BorderThickness="0"/>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Tiempo:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="11"/>
+                    <TextBlock x:Name="TxtTiempo" Text="00:00" VerticalAlignment="Center" FontSize="11"/>
+                </StackPanel>
+            </StatusBarItem>
 
-                <TextBlock Grid.Column="2" x:Name="TxtHora" Text="00:00:00" VerticalAlignment="Center"/>
-            </Grid>
-        </Border>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <ProgressBar x:Name="ProgressTotal" Height="10" Width="150" Margin="10,0" Background="#33000000" Foreground="#4EC9B0" BorderThickness="0"/>
+                    <TextBlock x:Name="TxtHora" Text="00:00:00" VerticalAlignment="Center" FontSize="11" Margin="10,0"/>
+                    <TextBlock Text="v1.0.5 PRO" FontWeight="Bold" FontSize="10" Opacity="0.7" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

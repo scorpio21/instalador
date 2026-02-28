@@ -4,6 +4,21 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
+## v1.0.5 - 2026-02-28
+
+### ✨ Añadido
+
+- **🔗 Integración con Git**: Nuevo panel en la barra de estado que muestra la rama actual y alerta de cambios pendientes con un código de colores inteligente (Verde/Naranja).
+- **❓ Menú de Ayuda Profesional**: Nueva sección en la barra superior con Manual de Uso rápido, enlace al perfil del Autor y créditos del sistema "Acerca de".
+- **🔄 Refresco Manual de Git**: Posibilidad de actualizar instantáneamente el estado del repositorio haciendo clic en el panel inferior.
+
+### 🛠️ Mejorado
+
+- **💎 Refactorización de Build**: Resolución de ambigüedades técnicas y limpieza profunda de errores de compilación XAML/C# para un despliegue sin fallos.
+- **🎨 UI Modernizada**: Rediseño completo de la barra inferior siguiendo estándares de Visual Studio y VS Code.
+
+---
+
 ## v1.0.4 - 2026-02-28
 
 ### ✨ Añadido
