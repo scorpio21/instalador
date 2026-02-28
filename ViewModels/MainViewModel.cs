@@ -114,6 +114,7 @@ namespace Instalador.ViewModels
             }
             else AddLog("La carpeta ya estaba limpia.");
             IsProjectReady = true;
+            await Task.CompletedTask;
         }
 
         private async Task EjecutarBuild()
@@ -144,6 +145,7 @@ namespace Instalador.ViewModels
             AddLog("Generando instalador...");
             _innoService.GenerarScript(ProyectoSeleccionado, Path.Combine(ProyectoSeleccionado.RutaProyecto, "installer.iss"));
             AddLog("Script .iss generado. Inicie ISCC.exe para finalizar.");
+            await Task.CompletedTask;
         }
 
         private async Task EjecutarTodo()

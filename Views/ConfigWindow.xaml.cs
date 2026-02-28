@@ -38,7 +38,7 @@ namespace Instalador.Views
 
         private void BtnSeleccionarInno_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog();
+            var dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Filter = "ISCC.exe|ISCC.exe|Todos los archivos (*.*)|*.*";
             if (dialog.ShowDialog() == true)
             {

@@ -58,18 +58,18 @@ namespace Instalador.Views
                          "5. 'Generar Instalador' crea el setup final.\n" +
                          "6. 'EJECUTAR TODO' automatiza todo el flujo.\n\n" +
                          "Tip: El punto naranja en la barra inferior indica cambios pendientes en Git.";
-            MessageBox.Show(msg, "Instrucciones", MessageBoxButton.OK, MessageBoxImage.Information);
+            System.Windows.MessageBox.Show(msg, "Instrucciones", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void MenuAutor_Click(object sender, RoutedEventArgs e)
         {
             try { Process.Start(new ProcessStartInfo("https://github.com/scorpio21") { UseShellExecute = true }); }
-            catch { MessageBox.Show("No se pudo abrir el navegador."); }
+            catch { System.Windows.MessageBox.Show("No se pudo abrir el navegador."); }
         }
 
         private void MenuAcercaDe_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"Instalador PRO v{AppVersion}\nDesarrollado para Scorpio 2026\n\nHerramienta profesional de empaquetado y automatización de procesos .NET.", "Acerca de", MessageBoxButton.OK, MessageBoxImage.Information);
+            System.Windows.MessageBox.Show($"Instalador PRO v{AppVersion}\nDesarrollado para Scorpio 2026\n\nHerramienta profesional de empaquetado y automatización de procesos .NET.", "Acerca de", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

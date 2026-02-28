@@ -1,7 +1,16 @@
 {
-  "RutaProyecto": "K:\\Instaladorpersonal\\EditorObjetos",
-  "RutaPublicacion": "K:\\Instaladorpersonal\\EditorObjetos\\publish",
+  "Proyectos": [
+    {
+      "Nombre": "EditorObjetos",
+      "RutaProyecto": "E:\\xampp\\htdocs\\EditorObjNet8",
+      "RutaPublicacion": "K:\\Instaladorpersonal\\EditorObjetos\\publish",
+      "VersionInstalador": "1.0"
+    }
+  ],
+  "UltimoProyectoSeleccionado": "EditorObjetos",
   "RutaInnoSetup": "C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe",
-  "VersionInstalador": "1.0",
-  "NombreProyecto": "EditorObjetos"
+  "RutaProyecto": null,
+  "RutaPublicacion": null,
+  "VersionInstalador": null,
+  "NombreProyecto": null
 }
