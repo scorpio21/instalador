@@ -86,9 +86,15 @@ namespace Instalador.ViewModels
                 catch { }
             }
 
-            // Si la versión es "1.0" o está vacía, ponemos "1.1.0" como quiere el usuario
-            if (string.IsNullOrEmpty(ProyectoSeleccionado.VersionInstalador) || ProyectoSeleccionado.VersionInstalador == "1.0")
+            // Intentar extraer versión del .csproj
+            string versionDetectada = ExtraerVersionDeCsProj(ProyectoSeleccionado.RutaProyecto);
+            if (!string.IsNullOrEmpty(versionDetectada))
             {
+                ProyectoSeleccionado.VersionInstalador = versionDetectada;
+            }
+            else if (string.IsNullOrEmpty(ProyectoSeleccionado.VersionInstalador) || ProyectoSeleccionado.VersionInstalador == "1.0")
+            {
+                // Solo si no hay versión detectada y es la de defecto, ponemos 1.1.0
                 ProyectoSeleccionado.VersionInstalador = "1.1.0";
             }
 
@@ -97,6 +103,38 @@ namespace Instalador.ViewModels
             {
                 ProyectoSeleccionado.RutaPublicacion = System.IO.Path.Combine(ProyectoSeleccionado.RutaProyecto, "publish");
             }
+        }
+
+        private string ExtraerVersionDeCsProj(string rutaDirectorio)
+        {
+            try
+            {
+                if (!System.IO.Directory.Exists(rutaDirectorio)) return "";
+
+                var archivos = System.IO.Directory.GetFiles(rutaDirectorio, "*.csproj");
+                if (archivos.Length == 0) return "";
+
+                // Leer el primer .csproj encontrado
+                string contenido = System.IO.File.ReadAllText(archivos[0]);
+
+                // Buscar etiquetas comunes de versión
+                string[] tags = { "<Version>", "<AssemblyVersion>", "<FileVersion>", "<ApplicationVersion>" };
+                foreach (var tag in tags)
+                {
+                    int start = contenido.IndexOf(tag);
+                    if (start != -1)
+                    {
+                        start += tag.Length;
+                        int end = contenido.IndexOf("</", start);
+                        if (end != -1)
+                        {
+                            return contenido.Substring(start, end - start).Trim();
+                        }
+                    }
+                }
+            }
+            catch { }
+            return "";
         }
     }
 }
