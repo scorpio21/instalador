@@ -1,5 +1,7 @@
 # 🛠️ .NET Deployment Automator Premium
 
+![Captura de pantalla del programa](img/menu.png)
+
 **Elevate your deployment workflow.** Una solución integral de escritorio diseñada para automatizar el ciclo de vida de empaquetado y distribución de aplicaciones .NET con una experiencia de usuario excepcional.
 
 ---
