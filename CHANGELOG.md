@@ -4,7 +4,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
-## v1.1.2 - 2026-03-01
+## v1.1.1 - 2026-03-01
 
 ### ✨ Añadido (Automatización)
 
@@ -13,11 +13,6 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 ### 🐛 Corregido
 
 - **Persistencia de Proyectos**: Asegurado el guardado correcto de nuevos proyectos al cerrar la ventana de configuración.
-
-## v1.1.1 - 2026-03-01
-
-### 🐛 Corregido
-
 - **Sincronización de UI**: Los campos de ruta ahora se actualizan instantáneamente al elegir una carpeta mediante el diálogo de selección (implementado `INotifyPropertyChanged`).
 
 ## v1.1.0 - 2026-02-28
