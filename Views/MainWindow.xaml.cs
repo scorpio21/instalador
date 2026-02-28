@@ -41,12 +41,19 @@ namespace Instalador.Views
             var cfg = new ConfigWindow();
             cfg.DataContext = vm;
             cfg.Owner = this;
-            cfg.ShowDialog();
             
-            // Refrescar lista de proyectos tras cerrar config
-            _viewModel.Proyectos.Clear();
-            var newConfig = configService.CargarConfig();
-            foreach (var p in newConfig.Proyectos) _viewModel.Proyectos.Add(p);
+            if (cfg.ShowDialog() == true)
+            {
+                // Refrescar la configuración en el ViewModel principal
+                var newConfig = configService.CargarConfig();
+                
+                // Actualizar la lista observable para el ComboBox
+                _viewModel.Proyectos.Clear();
+                foreach (var p in newConfig.Proyectos) _viewModel.Proyectos.Add(p);
+
+                // Sincronizar el objeto _config interno del ViewModel para evitar sobrescrituras
+                _viewModel.ActualizarConfig(newConfig);
+            }
         }
 
         private void MenuInstrucciones_Click(object sender, RoutedEventArgs e)

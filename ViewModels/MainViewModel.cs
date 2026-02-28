@@ -167,6 +167,13 @@ namespace Instalador.ViewModels
                 LogEntries.Insert(0, new LogEntry { Hora = DateTime.Now.ToString("HH:mm:ss"), Mensaje = mensaje });
             });
         }
+
+        public void ActualizarConfig(Config config)
+        {
+            _config = config;
+            // No reseteamos Proyectos aquí porque ya se hace en MainWindow.xaml.cs
+            Console.WriteLine($"[MainVM] Configuración sincronizada. Proyectos: {_config.Proyectos.Count}");
+        }
     }
 
     public class LogEntry

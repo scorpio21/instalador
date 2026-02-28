@@ -55,11 +55,20 @@ namespace Instalador.Models
         {
             try
             {
+                string fullPath = Path.GetFullPath(ArchivoConfig);
+                Console.WriteLine($"[CONFIG] Cargando desde: {fullPath}");
+
                 if (!File.Exists(ArchivoConfig))
+                {
+                    Console.WriteLine("[CONFIG] Archivo no existe, creando nuevo.");
                     return new Config();
+                }
 
                 string json = File.ReadAllText(ArchivoConfig);
                 var config = JsonSerializer.Deserialize<Config>(json) ?? new Config();
+                
+                Console.WriteLine($"[CONFIG] Proyectos cargados: {config.Proyectos.Count}");
+                foreach(var p in config.Proyectos) Console.WriteLine($" - {p.Nombre}");
 
                 // Lógica de migración si venimos de v1.0.3 o inferior
                 if (config.Proyectos.Count == 0 && !string.IsNullOrEmpty(config.NombreProyecto))
@@ -95,6 +104,7 @@ namespace Instalador.Models
         {
             string json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(ArchivoConfig, json);
+            Console.WriteLine($"[CONFIG] Guardado exitoso. Total proyectos: {Proyectos.Count}");
         }
 
         public ProyectoConfig? GetProyectoActual()

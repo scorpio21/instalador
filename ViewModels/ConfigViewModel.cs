@@ -18,6 +18,8 @@ namespace Instalador.ViewModels
             _config = _configService.CargarConfig();
             Proyectos = new ObservableCollection<ProyectoConfig>(_config.Proyectos);
             
+            Console.WriteLine($"[ConfigVM] Inicializado con {Proyectos.Count} proyectos.");
+            
             GuardarCommand = new RelayCommand(_ => Guardar());
             AddCommand = new RelayCommand(_ => AddProyecto());
             DeleteCommand = new RelayCommand(_ => DeleteProyecto());
@@ -47,6 +49,7 @@ namespace Instalador.ViewModels
 
         private void Guardar()
         {
+            Console.WriteLine($"[ConfigVM] Guardando {Proyectos.Count} proyectos...");
             _config.Proyectos.Clear();
             foreach (var p in Proyectos) _config.Proyectos.Add(p);
             _configService.GuardarConfig(_config);
