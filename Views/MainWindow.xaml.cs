@@ -10,7 +10,7 @@ namespace Instalador.Views
 {
     public partial class MainWindow : Window
     {
-        public const string AppVersion = "1.1.0";
+        public const string AppVersion = "1.1.1";
         private MainViewModel _viewModel;
         private DispatcherTimer timerHora = new DispatcherTimer();
 
@@ -51,7 +51,7 @@ namespace Instalador.Views
 
         private void MenuInstrucciones_Click(object sender, RoutedEventArgs e)
         {
-            string msg = "MANUAL DE USO RÁPIDO (v1.1.0):\n\n" +
+            string msg = "MANUAL DE USO RÁPIDO (v1.1.1):\n\n" +
                          "1. Selecciona tu proyecto en el selector superior.\n" +
                          "2. Usa 'Limpiar' para preparar el entorno.\n" +
                          "3. 'Compilar' verifica que el código sea correcto.\n" +
