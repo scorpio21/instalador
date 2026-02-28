@@ -4,7 +4,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
-## 🚀 v1.0.4 - 2026-02-28
+## v1.0.4 - 2026-02-28
 
 ### ✨ Añadido
 
@@ -20,7 +20,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
-## 🛠️ v1.0.3 - 2026-02-28
+## v1.0.3 - 2026-02-28
 
 ### ✨ Añadido
 
@@ -36,7 +36,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
-## 🎨 v1.0.2 - 2026-02-28
+## v1.0.2 - 2026-02-28
 
 ### ✨ Añadido
 
@@ -53,7 +53,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
-## 🏁 v1.0.0 - 2026-02-28
+## v1.0.0 - 2026-02-28
 
 ### ✨ Añadido
 
