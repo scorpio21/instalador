@@ -8,72 +8,111 @@
         ResizeMode="NoResize"
         WindowStyle="ThreeDBorderWindow">
 
-    <Grid Margin="20">
+    <Grid Margin="25">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="AJUSTES DEL PROYECTO" FontWeight="Bold" FontSize="18" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,20"/>
-
-        <StackPanel Grid.Row="1">
-            <!-- Nombre -->
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Nombre del Proyecto" Margin="0,0,0,5" Foreground="#999"/>
-                <TextBox x:Name="TxtNombreProyecto"/>
-            </StackPanel>
-
-            <!-- Version -->
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Versión" Margin="0,0,0,5" Foreground="#999"/>
-                <TextBox x:Name="TxtVersion"/>
-            </StackPanel>
-
-            <!-- Ruta Proyecto -->
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Ruta del Proyecto" Margin="0,0,0,5" Foreground="#999"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="TxtRutaProyecto"/>
-                    <Button Grid.Column="1" Content="Buscar..." Margin="10,0,0,0" Click="BtnBuscarProyecto_Click" Width="80"/>
-                </Grid>
-            </StackPanel>
-
-            <!-- Ruta Publicacion -->
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Ruta de Publicación" Margin="0,0,0,5" Foreground="#999"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="TxtRutaPublicacion"/>
-                    <Button Grid.Column="1" Content="Buscar..." Margin="10,0,0,0" Click="BtnBuscarPublicacion_Click" Width="80"/>
-                </Grid>
-            </StackPanel>
-
-            <!-- Ruta Inno -->
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Ruta de Inno Setup (ISCC.exe)" Margin="0,0,0,5" Foreground="#999"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="TxtRutaInnoSetup"/>
-                    <Button Grid.Column="1" Content="Buscar..." Margin="10,0,0,0" Click="BtnBuscarInno_Click" Width="80"/>
-                </Grid>
-            </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+            <Path Data="{StaticResource IconConfig}" Fill="{StaticResource PrimaryBlue}" Width="24" Height="24" Stretch="Uniform" Margin="0,0,12,0" VerticalAlignment="Center"/>
+            <TextBlock Text="AJUSTES DEL PROYECTO" FontWeight="Bold" FontSize="20" Foreground="White" VerticalAlignment="Center"/>
         </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Nombre -->
+                <StackPanel Margin="0,0,0,15">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Path Data="{StaticResource IconArchivo}" Fill="#999" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0"/>
+                        <TextBlock Text="Nombre del Proyecto" Foreground="#999" FontSize="11" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <TextBox x:Name="TxtNombreProyecto" Height="35"/>
+                </StackPanel>
+
+                <!-- Version -->
+                <StackPanel Margin="0,0,0,15">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Path Data="{StaticResource IconCompilar}" Fill="#999" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0"/>
+                        <TextBlock Text="Versión del Instalador" Foreground="#999" FontSize="11" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <TextBox x:Name="TxtVersion" Height="35"/>
+                </StackPanel>
+
+                <Separator Background="#22FFFFFF" Margin="0,10,0,20"/>
+
+                <!-- Ruta Proyecto -->
+                <StackPanel Margin="0,0,0,15">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Path Data="{StaticResource IconZip}" Fill="{StaticResource PrimaryBlue}" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0"/>
+                        <TextBlock Text="Ruta del Proyecto (.csproj / Carpeta)" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtRutaProyecto" Height="35"/>
+                        <Button Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource SecondaryButton}" Click="BtnBuscarProyecto_Click" Width="90">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconZip}" Fill="White" Width="10" Height="10" Stretch="Uniform" Margin="0,0,5,0"/>
+                                <TextBlock Text="Buscar..."/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Ruta Publicacion -->
+                <StackPanel Margin="0,0,0,15">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Path Data="{StaticResource IconExport}" Fill="{StaticResource PrimaryBlue}" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0"/>
+                        <TextBlock Text="Directorio de Salida (Publicación)" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtRutaPublicacion" Height="35"/>
+                        <Button Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource SecondaryButton}" Click="BtnBuscarPublicacion_Click" Width="90">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconExport}" Fill="White" Width="10" Height="10" Stretch="Uniform" Margin="0,0,5,0"/>
+                                <TextBlock Text="Buscar..."/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Ruta Inno -->
+                <StackPanel Margin="0,0,0,15">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Path Data="{StaticResource IconUtilidades}" Fill="{StaticResource PrimaryBlue}" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0"/>
+                        <TextBlock Text="Compilador Inno Setup (ISCC.exe)" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtRutaInnoSetup" Height="35"/>
+                        <Button Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource SecondaryButton}" Click="BtnBuscarInno_Click" Width="90">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconUtilidades}" Fill="White" Width="10" Height="10" Stretch="Uniform" Margin="0,0,5,0"/>
+                                <TextBlock Text="Buscar..."/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
 
         <!-- Botones Pie -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button Content="Cancelar" Click="BtnCancelar_Click" Margin="0,0,10,0" Width="100"/>
-            <Button Content="Guardar Cambios" Style="{StaticResource AccentButton}" Click="BtnGuardar_Click" Width="150"/>
-        </StackPanel>
+        <Border Grid.Row="2" Background="#202020" Margin="-25,20,-25,-25" Padding="25">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancelar" Style="{StaticResource SecondaryButton}" Click="BtnCancelar_Click" Margin="0,0,15,0" Width="100"/>
+                <Button Content="GUARDAR CONFIGURACIÓN" Style="{StaticResource AccentButton}" Click="BtnGuardar_Click" Width="200" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

@@ -321,7 +321,7 @@ namespace Instalador
             if (csproj == null) return;
 
             Log("Iniciando flujo completo...");
-            await Task.Run(async () => {
+            await Task.Run(() => {
                 // Build
                 if (RunProcess("dotnet", $"build -c {SelectedConfig}", config.RutaProyecto) != 0) return;
                 SetProgress(20);

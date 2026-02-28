@@ -10,7 +10,7 @@ Este ecosistema automatiza tareas repetitivas y críticas de despliegue, elimina
 
 ### Características Principales
 
-* **🎨 Interfaz de Nueva Generación**: Desarrollada en **WPF** con un tema oscuro "Deep Charcoal" y micro-animaciones para una experiencia visual premium.
+* **🎨 Interfaz de Nueva Generación**: Desarrollada en **WPF** con un tema oscuro "Deep Charcoal", micro-animaciones y ventanas de configuración rediseñadas para una experiencia visual premium.
 * **📐 Iconografía Vectorial Escalamble**: Implementación completa de iconos SVG que garantizan nitidez en cualquier resolución (HiDPI).
 * **⚡ Motor de Compilación Inteligente**: Abstracción del CLI de .NET que permite alternar entre perfiles de **Release** y **Debug** con un solo clic.
 * **📦 Empaquetado Multiformato**:
@@ -68,4 +68,9 @@ Para garantizar integridad en sus paquetes, se recomienda seguir este orden de o
 ---
 
 > [!NOTE]
-> Este software es "Universal". Puede ser reutilizado para cualquier proyecto .NET de consola o escritorio simplemente actualizando el puntero `RutaProyecto`.
+> este software es "Universal". Puede ser reutilizado para cualquier proyecto .NET de consola o escritorio simplemente tienes que configurar las rutas desde el menú de configuración.
+---
+
+## 📜 Licencia
+
+Este proyecto está bajo la Licencia **MIT**. Consulte el archivo `LICENSE` para más detalles.

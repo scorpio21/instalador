@@ -50,6 +50,20 @@ namespace Instalador
 
         private void BtnGuardar_Click(object sender, RoutedEventArgs e)
         {
+            // Validación básica
+            if (string.IsNullOrWhiteSpace(TxtNombreProyecto.Text) || 
+                string.IsNullOrWhiteSpace(TxtRutaProyecto.Text) || 
+                string.IsNullOrWhiteSpace(TxtRutaPublicacion.Text))
+            {
+                System.Windows.MessageBox.Show("Por favor, completa los campos obligatorios (Nombre y Rutas).", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(TxtRutaInnoSetup.Text) && !File.Exists(TxtRutaInnoSetup.Text))
+            {
+                System.Windows.MessageBox.Show("La ruta de Inno Setup no parece válida o el archivo ISCC.exe no existe.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
             config.NombreProyecto = TxtNombreProyecto.Text;
             config.VersionInstalador = TxtVersion.Text;
             config.RutaProyecto = TxtRutaProyecto.Text;
