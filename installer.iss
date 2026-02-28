@@ -32,6 +32,7 @@ Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64os
+SetupIconFile=img\ico\Installer.ico
 
 [Languages]
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
@@ -50,3 +51,18 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "Ejecutar {#MyAppName}"; Flags: nowait postinstall skipifsilent
+
+[Code]
+procedure InitializeWizard();
+var
+  AuthorLabel: TLabel;
+begin
+  { Crear sello de autor en la página de selección de carpeta }
+  AuthorLabel := TLabel.Create(WizardForm);
+  AuthorLabel.Parent := WizardForm.SelectDirPage;
+  AuthorLabel.Caption := 'BY SCORPIO 2026';
+  AuthorLabel.Font.Style := [fsBold];
+  AuthorLabel.Font.Color := clGray;
+  AuthorLabel.Top := WizardForm.DirEdit.Top + WizardForm.DirEdit.Height + 10;
+  AuthorLabel.Left := WizardForm.DirEdit.Left;
+end;
