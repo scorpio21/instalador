@@ -207,7 +207,7 @@
                 <StackPanel Orientation="Horizontal">
                     <ProgressBar x:Name="ProgressTotal" Height="10" Width="150" Margin="10,0" Background="#33000000" Foreground="#4EC9B0" BorderThickness="0"/>
                     <TextBlock x:Name="TxtHora" Text="00:00:00" VerticalAlignment="Center" FontSize="11" Margin="10,0"/>
-                    <TextBlock Text="v1.0.5 PRO" FontWeight="Bold" FontSize="10" Opacity="0.7" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtAppVersion" Text="v1.0.5 PRO" FontWeight="Bold" FontSize="10" Opacity="0.7" VerticalAlignment="Center"/>
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>

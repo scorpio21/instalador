@@ -15,6 +15,7 @@ namespace Instalador
 {
     public partial class MainWindow : Window
     {
+        public const string AppVersion = "1.0.5";
         private Config config = null!;
         private Stopwatch cronometro = new Stopwatch();
         private DispatcherTimer timerHora = new DispatcherTimer();
@@ -35,6 +36,7 @@ namespace Instalador
             timerReloj.Interval = TimeSpan.FromMilliseconds(500);
             timerReloj.Tick += (s, e) => TxtTiempo.Text = "Tiempo: " + cronometro.Elapsed.ToString(@"mm\:ss");
 
+            TxtAppVersion.Text = $"v{AppVersion} PRO";
             ComboConfig.SelectedIndex = 0; // Release
 
             ActualizarEstadoGit();
@@ -515,7 +517,7 @@ namespace Instalador
 
         private void MenuAcercaDe_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.MessageBox.Show("Instalador PRO v1.0.5\nDesarrollado para Scorpio 2026\n\nHerramienta profesional de empaquetado y automatización de procesos .NET.", "Acerca de", MessageBoxButton.OK, MessageBoxImage.Information);
+            System.Windows.MessageBox.Show($"Instalador PRO v{AppVersion}\nDesarrollado para Scorpio 2026\n\nHerramienta profesional de empaquetado y automatización de procesos .NET.", "Acerca de", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 
