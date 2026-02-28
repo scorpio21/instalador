@@ -20,6 +20,7 @@ namespace Instalador.Views
                 if (DataContext is ConfigViewModel vm && vm.ProyectoSeleccionado != null)
                 {
                     vm.ProyectoSeleccionado.RutaProyecto = dialog.SelectedPath;
+                    vm.OnRutaProyectoChanged();
                 }
             }
         }

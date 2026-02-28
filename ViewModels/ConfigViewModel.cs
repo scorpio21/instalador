@@ -67,5 +67,30 @@ namespace Instalador.ViewModels
             string ruta = _configService.DetectarInnoSetup();
             if (!string.IsNullOrEmpty(ruta)) RutaInnoSetup = ruta;
         }
+
+        public void OnRutaProyectoChanged()
+        {
+            if (ProyectoSeleccionado == null || string.IsNullOrEmpty(ProyectoSeleccionado.RutaProyecto)) return;
+
+            // Si el nombre es el de defecto, intentamos extraer el nombre real de la carpeta
+            if (string.IsNullOrEmpty(ProyectoSeleccionado.Nombre) || ProyectoSeleccionado.Nombre == "Nuevo Proyecto")
+            {
+                try
+                {
+                    string folderName = System.IO.Path.GetFileName(ProyectoSeleccionado.RutaProyecto.TrimEnd(System.IO.Path.DirectorySeparatorChar));
+                    if (!string.IsNullOrEmpty(folderName))
+                    {
+                        ProyectoSeleccionado.Nombre = folderName;
+                    }
+                }
+                catch { }
+            }
+
+            // Auto-rellenar carpeta de publicación si está vacía
+            if (string.IsNullOrEmpty(ProyectoSeleccionado.RutaPublicacion))
+            {
+                ProyectoSeleccionado.RutaPublicacion = System.IO.Path.Combine(ProyectoSeleccionado.RutaProyecto, "publish");
+            }
+        }
     }
 }

@@ -4,6 +4,16 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
+## v1.1.2 - 2026-03-01
+
+### ✨ Añadido (Automatización)
+
+- **Auto-rellenado Inteligente**: Al seleccionar la carpeta del proyecto, el sistema extrae automáticamente el **Nombre del Proyecto** y configura el **Directorio de Publicación** (`/publish`) por defecto.
+
+### 🐛 Corregido
+
+- **Persistencia de Proyectos**: Asegurado el guardado correcto de nuevos proyectos al cerrar la ventana de configuración.
+
 ## v1.1.1 - 2026-03-01
 
 ### 🐛 Corregido
