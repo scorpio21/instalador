@@ -6,7 +6,8 @@
         Foreground="{StaticResource TextLight}"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        WindowStyle="ThreeDBorderWindow">
+        WindowStyle="ThreeDBorderWindow"
+        Icon="img\ico\Installer.ico">
 
     <Grid Margin="25">
         <Grid.RowDefinitions>

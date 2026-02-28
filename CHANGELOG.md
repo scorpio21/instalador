@@ -12,6 +12,7 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.
 - **Ventana de Configuración Premium**: Rediseño total con iconografía vectorial, mejores márgenes y espaciado.
 - **Selector de Perfiles con Iconos**: Inclusión de iconos visuales (Play/Gear) en el selector de Release/Debug para una identificación rápida.
 - **Estilos de Botones Acentuados**: Implementación de `AccentButton` (azul) y `SecondaryButton` (gris) para una jerarquía visual clara.
+- **Icono de Aplicación**: Asignación de icono personalizado (`Installer.ico`) a las ventanas principal y de configuración.
 - **Validación de Datos**: Sistema de alertas para evitar guardar configuraciones con rutas inexistentes o campos vacíos.
 
 ### Fixed

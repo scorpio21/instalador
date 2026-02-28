@@ -8,7 +8,8 @@
         Background="#1E1E1E" Foreground="White"
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI"
-        AllowsTransparency="False" WindowStyle="ThreeDBorderWindow">
+        AllowsTransparency="False" WindowStyle="ThreeDBorderWindow"
+        Icon="img\ico\Installer.ico">
 
 
     <Grid>
