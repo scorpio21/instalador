@@ -12,18 +12,15 @@ Este ecosistema automatiza tareas repetitivas y críticas de despliegue, elimina
 
 ### Características Principales
 
-* **🎨 Interfaz de Nueva Generación**: Desarrollada en **WPF** con un tema oscuro "Deep Charcoal", micro-animaciones y ventanas de configuración rediseñadas para una experiencia visual premium.
-* **📐 Iconografía Vectorial Escalamble**: Implementación completa de iconos SVG que garantizan nitidez en cualquier resolución (HiDPI).
-* **⚡ Motor de Compilación Inteligente**: Abstracción del CLI de .NET que permite alternar entre perfiles de **Release** y **Debug** con un solo clic.
-* **📂 Gestión de Proyectos Múltiples**: Selector inteligente en la barra de tareas para cambiar entre diferentes aplicaciones en desarrollo sin reconfigurar rutas.
-* **📦 Empaquetado Multiformato**:
-  * **Single-File**: Compresión de dependencias en un único binario ejecutable.
-  * **Portable ZIP**: Generación de paquetes de distribución sin instalador.
-  * **Inno Setup Engine**: Integración nativa con auto-detección de `ISCC.exe` para generar instaladores.
-* **🖥️ Monitorización y Persistencia**: Consola integrada con feedback visual y guardado automático de historial en la carpeta `/logs`.
-* **✅ Validación Inteligente**: Sistema de validación de rutas en tiempo real con indicadores visuales de estado (Código de colores).
-* **🔗 Ecosistema Git Integrado**: Monitorización en tiempo real de la rama actual y estado de cambios pendientes directamente desde el footer de la aplicación.
-* **❓ Centro de Ayuda**: Sistema de documentación integrada con guías rápidas y acceso directo a soporte del autor.
+* **🎨 Interfaz de Nueva Generación**: Desarrollada en **WPF** siguiendo el patrón **MVVM**, con un tema oscuro "Deep Charcoal" y micro-animaciones.
+* **📐 Iconografía Vectorial Escalamble**: Implementación completa de iconos SVG (Static Geometry) para una nitidez absoluta.
+* **⚡ Motor de Compilación Inteligente**: Abstracción del CLI de .NET que permite alternar entre perfiles y configurar opciones avanzadas (`ReadyToRun`, `Trimming`).
+* **📂 Gestión Multi-Proyecto**: Selector inteligente para cambiar entre diferentes configuraciones de aplicaciones instantáneamente.
+* **📦 Empaquetado Profesional**: Generación de Single-File, ZIP y archivos de instalación mediante **Inno Setup**.
+* **🔔 Notificaciones de Sistema**: Avisos nativos (Toast) al finalizar procesos largos.
+* **🛠️ Herramientas de Robustez**: Auto-detección de compiladores y validación de rutas en tiempo real.
+* **🔗 Ecosistema Git Integrado**: Monitorización de ramas y cambios pendientes directamente en la aplicación.
+* **❓ Soporte y Ayuda**: Manual de usuario integrado y centro de ayuda.
 
 ---
 

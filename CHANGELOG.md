@@ -4,6 +4,18 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
+## v1.1.0 - 2026-02-28
+
+### ✨ Añadido (Power User Update)
+
+- **🔔 Notificaciones Nativa**: Implementación de avisos Toast de Windows al finalizar tareas (Build, Publish, Installer).
+- **🔍 Auto-detección Inteligente**: El sistema ahora localiza automáticamente el compilador `ISCC.exe` de Inno Setup.
+- **⚡ Publicación Avanzada**: Nuevas opciones en UI para configurar `ReadyToRun`, `Trimmed` y `Compression`.
+- **✅ Validación en Tiempo Real**: Los campos de configuración validan la existencia de rutas instantáneamente.
+- **💎 Refactorización MVVM**: Estructura modular completa (Models, Views, ViewModels, Services).
+
+---
+
 ## v1.0.5 - 2026-02-28
 
 ### ✨ Añadido
