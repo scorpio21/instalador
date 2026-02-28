@@ -111,8 +111,9 @@
         <!-- Botones Pie -->
         <Border Grid.Row="2" Background="#202020" Margin="-25,20,-25,-25" Padding="25">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="BtnNuevo" Content="NUEVO PROYECTO" Style="{StaticResource SecondaryButton}" Click="BtnNuevo_Click" Margin="0,0,15,0" Width="130"/>
                 <Button Content="Cancelar" Style="{StaticResource SecondaryButton}" Click="BtnCancelar_Click" Margin="0,0,15,0" Width="100"/>
-                <Button Content="GUARDAR CONFIGURACIÓN" Style="{StaticResource AccentButton}" Click="BtnGuardar_Click" Width="200" FontWeight="Bold"/>
+                <Button Content="GUARDAR" Style="{StaticResource AccentButton}" Click="BtnGuardar_Click" Width="150" FontWeight="Bold"/>
             </StackPanel>
         </Border>
     </Grid>

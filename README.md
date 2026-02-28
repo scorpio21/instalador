@@ -15,6 +15,7 @@ Este ecosistema automatiza tareas repetitivas y críticas de despliegue, elimina
 * **🎨 Interfaz de Nueva Generación**: Desarrollada en **WPF** con un tema oscuro "Deep Charcoal", micro-animaciones y ventanas de configuración rediseñadas para una experiencia visual premium.
 * **📐 Iconografía Vectorial Escalamble**: Implementación completa de iconos SVG que garantizan nitidez en cualquier resolución (HiDPI).
 * **⚡ Motor de Compilación Inteligente**: Abstracción del CLI de .NET que permite alternar entre perfiles de **Release** y **Debug** con un solo clic.
+* **📂 Gestión de Proyectos Múltiples**: Selector inteligente en la barra de tareas para cambiar entre diferentes aplicaciones en desarrollo sin reconfigurar rutas.
 * **📦 Empaquetado Multiformato**:
   * **Single-File**: Compresión de dependencias en un único binario ejecutable.
   * **Portable ZIP**: Generación de paquetes de distribución sin instalador.

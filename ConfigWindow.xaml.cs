@@ -19,10 +19,14 @@ namespace Instalador
 
         private void LoadData()
         {
-            TxtNombreProyecto.Text = config.NombreProyecto;
-            TxtVersion.Text = config.VersionInstalador;
-            TxtRutaProyecto.Text = config.RutaProyecto;
-            TxtRutaPublicacion.Text = config.RutaPublicacion;
+            var p = config.GetProyectoActual();
+            if (p != null)
+            {
+                TxtNombreProyecto.Text = p.Nombre;
+                TxtVersion.Text = p.VersionInstalador;
+                TxtRutaProyecto.Text = p.RutaProyecto;
+                TxtRutaPublicacion.Text = p.RutaPublicacion;
+            }
 
             if (string.IsNullOrWhiteSpace(config.RutaInnoSetup))
             {
@@ -83,9 +87,6 @@ namespace Instalador
             }
             else if (tb == TxtRutaPublicacion)
             {
-                // El directorio de salida puede no existir, así que lo marcamos como válido 
-                // si la ruta tiene un formato correcto (simplemente comprobamos que no sea vacía)
-                // O mejor: comprobamos que el directorio padre existe.
                 try {
                     string parent = Path.GetDirectoryName(path) ?? "";
                     esValido = string.IsNullOrEmpty(parent) || Directory.Exists(parent) || Directory.Exists(path);
@@ -123,30 +124,41 @@ namespace Instalador
                 TxtRutaInnoSetup.Text = dlg.FileName;
         }
 
+        private void BtnNuevo_Click(object sender, RoutedEventArgs e)
+        {
+            TxtNombreProyecto.Text = "";
+            TxtVersion.Text = "1.0";
+            TxtRutaProyecto.Text = "";
+            TxtRutaPublicacion.Text = "";
+            TxtNombreProyecto.Focus();
+        }
+
         private void BtnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            // Validación básica
             if (string.IsNullOrWhiteSpace(TxtNombreProyecto.Text) || 
                 string.IsNullOrWhiteSpace(TxtRutaProyecto.Text) || 
                 string.IsNullOrWhiteSpace(TxtRutaPublicacion.Text))
             {
-                System.Windows.MessageBox.Show("Por favor, completa los campos obligatorios (Nombre y Rutas).", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show("Por favor, completa los campos obligatorios.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(TxtRutaInnoSetup.Text) && !File.Exists(TxtRutaInnoSetup.Text))
+            // Buscar si ya existe un proyecto con ese nombre para actualizarlo, o crear uno nuevo
+            var p = config.Proyectos.FirstOrDefault(proj => proj.Nombre == TxtNombreProyecto.Text);
+            if (p == null)
             {
-                System.Windows.MessageBox.Show("La ruta de Inno Setup no parece válida o el archivo ISCC.exe no existe.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                p = new ProyectoConfig { Nombre = TxtNombreProyecto.Text };
+                config.Proyectos.Add(p);
             }
 
-            config.NombreProyecto = TxtNombreProyecto.Text;
-            config.VersionInstalador = TxtVersion.Text;
-            config.RutaProyecto = TxtRutaProyecto.Text;
-            config.RutaPublicacion = TxtRutaPublicacion.Text;
+            p.VersionInstalador = TxtVersion.Text;
+            p.RutaProyecto = TxtRutaProyecto.Text;
+            p.RutaPublicacion = TxtRutaPublicacion.Text;
             config.RutaInnoSetup = TxtRutaInnoSetup.Text;
+            config.UltimoProyectoSeleccionado = p.Nombre;
 
             config.Guardar();
-            System.Windows.MessageBox.Show("Configuración guardada correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+            System.Windows.MessageBox.Show("Proyecto guardado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
             this.DialogResult = true;
             Close();
         }

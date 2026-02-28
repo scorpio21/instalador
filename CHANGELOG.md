@@ -5,6 +5,20 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.4] - 2026-02-28
+
+### Añadido
+
+- **Gestión de Proyectos Recientes**: Nuevo selector en la barra superior para alternar instantáneamente entre diferentes proyectos configurados.
+- **Arquitectura Multi-Perfil**: El sistema ahora guarda una lista de configuraciones independientes para cada proyecto en `config.json`.
+- **Nuevo Botón en Configuración**: Añadido botón "NUEVO PROYECTO" para crear perfiles desde cero sin borrar los anteriores.
+- **Migración Automática**: Lógica inteligente que detecta configuraciones de versiones anteriores y las migra al nuevo formato sin pérdida de datos.
+
+### Mejorado
+
+- Limpieza total de advertencias de compilación (Clean Build).
+- Feedback visual al cambiar de proyecto en la consola.
+
 ## v1.0.3 - 2026-02-28
 
 ### Añadido
@@ -19,9 +33,9 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.
 - Estabilidad general y manejo de excepciones en la carga de recursos.
 - Feedback visual en la ventana de configuración.
 
-## v1.0.2 - 2026-02-28
+## [v1.0.2] - 2026-02-28
 
-### Added
+### Añadido
 
 - **Ventana de Configuración Premium**: Rediseño total con iconografía vectorial, mejores márgenes y espaciado.
 - **Selector de Perfiles con Iconos**: Inclusión de iconos visuales (Play/Gear) en el selector de Release/Debug para una identificación rápida.
@@ -29,16 +43,16 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.
 - **Icono de Aplicación**: Asignación de icono personalizado (`Installer.ico`) a las ventanas principal y de configuración.
 - **Validación de Datos**: Sistema de alertas para evitar guardar configuraciones con rutas inexistentes o campos vacíos.
 
-### Fixed
+### Corregido
 
 - **Error de Crash Crítico**: Solucionado el cierre inesperado de la aplicación por el recurso `TextLight` faltante.
 - **Problema de Contraste en ComboBox**: Corregido el fondo blanco forzando un `ControlTemplate` oscuro en todos los desplegables.
 - **Error de Compilación XAML**: Eliminación de propiedades no soportadas (`LetterSpacing`) que impedían el build.
 - **Advertencias de Código**: Limpieza de advertencias `async` innecesarias en `MainWindow.xaml.cs`.
 
-## v1.0.0 - 2026-02-28
+## [v1.0.0] - 2026-02-28
 
-### Added
+### Añadido
 
 - Migración completa a arquitectura WPF en .NET 8.
 - Interfaz Premium con Modo Oscuro "Deep Charcoal".
@@ -48,13 +62,13 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.
 - Integración automática con Inno Setup para generación de instaladores.
 - Documentación técnica profesional en `README.md`.
 
-### Fixed
+### Corregido
 
 - Error de visibilidad de texto blanco sobre fondo claro en menús de Windows.
 - Superposición de iconos y texto en los encabezados del menú principal.
 - Bloqueo de archivos durante la fase de compilación por procesos abiertos.
 
-### Changed
+### Cambiado
 
 - Refactorización de la lógica de negocio para mejorar la modularidad.
 - Mejora de la consola de log con feedback visual de errores y éxito.

@@ -41,7 +41,29 @@ namespace Instalador
         private void CargarConfig()
         {
             config = Config.Cargar();
+            
+            // Llenar combo de proyectos
+            ComboProyectos.SelectionChanged -= ComboProyectos_SelectionChanged;
+            ComboProyectos.ItemsSource = config.Proyectos;
+            
+            var actual = config.GetProyectoActual();
+            if (actual != null)
+            {
+                ComboProyectos.SelectedItem = actual;
+            }
+            ComboProyectos.SelectionChanged += ComboProyectos_SelectionChanged;
+
             Log("Configuración cargada.");
+        }
+
+        private void ComboProyectos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboProyectos.SelectedItem is ProyectoConfig p)
+            {
+                config.UltimoProyectoSeleccionado = p.Nombre;
+                config.Guardar();
+                Log($"Cambiado al proyecto: {p.Nombre}");
+            }
         }
 
         private void Log(string mensaje)
@@ -125,12 +147,15 @@ namespace Instalador
 
         private void CopiarRecursos()
         {
+            var p = config.GetProyectoActual();
+            if (p == null) return;
+
             try
             {
-                string destino = Path.Combine(config.RutaPublicacion, "win-x64-singlefile");
+                string destino = Path.Combine(p.RutaPublicacion, "win-x64-singlefile");
                 if (!Directory.Exists(destino)) Directory.CreateDirectory(destino);
 
-                string origenImg = Path.Combine(config.RutaProyecto, "img");
+                string origenImg = Path.Combine(p.RutaProyecto, "img");
                 string destinoImg = Path.Combine(destino, "img");
 
                 if (Directory.Exists(origenImg))
@@ -147,7 +172,7 @@ namespace Instalador
                     Log("Carpeta img copiada.");
                 }
 
-                string origenReadme = Path.Combine(config.RutaProyecto, "README.md");
+                string origenReadme = Path.Combine(p.RutaProyecto, "README.md");
                 string destinoReadme = Path.Combine(destino, "README.md");
                 if (File.Exists(origenReadme))
                 {
@@ -188,20 +213,23 @@ namespace Instalador
 
         private async void BtnLimpiar_Click(object sender, RoutedEventArgs e)
         {
+            var p = config.GetProyectoActual();
+            if (p == null) { Log("[ERR] No hay proyecto seleccionado."); return; }
+
             LogEntries.Clear();
-            Log("=== LIMPIEZA COMPLETA ===");
+            Log($"=== LIMPIEZA COMPLETA: {p.Nombre} ===");
             SetProgress(0);
             IniciarCronometro();
 
             await Task.Run(() =>
             {
-                if (Directory.Exists(config.RutaPublicacion))
+                if (Directory.Exists(p.RutaPublicacion))
                 {
-                    Directory.Delete(config.RutaPublicacion, true);
-                    Log("Directorio de publicación eliminado.");
+                    try { Directory.Delete(p.RutaPublicacion, true); Log("Directorio de publicación eliminado."); }
+                    catch (Exception ex) { Log("[WARN] No se pudo borrar la carpeta de publicación: " + ex.Message); }
                 }
-                RunProcess("dotnet", "clean", config.RutaProyecto);
-                RunProcess("dotnet", "restore", config.RutaProyecto);
+                RunProcess("dotnet", "clean", p.RutaProyecto);
+                RunProcess("dotnet", "restore", p.RutaProyecto);
             });
 
             SetProgress(100);
@@ -214,13 +242,16 @@ namespace Instalador
 
         private async void BtnCompilar_Click(object sender, RoutedEventArgs e)
         {
+            var p = config.GetProyectoActual();
+            if (p == null) return;
+
             LogEntries.Clear();
-            Log($"=== COMPILAR PROYECTO ({SelectedConfig}) ===");
+            Log($"=== COMPILAR PROYECTO: {p.Nombre} ({SelectedConfig}) ===");
             SetProgress(0);
             IniciarCronometro();
 
             int exitCode = -1;
-            await Task.Run(() => exitCode = RunProcess("dotnet", $"build -c {SelectedConfig}", config.RutaProyecto));
+            await Task.Run(() => exitCode = RunProcess("dotnet", $"build -c {SelectedConfig}", p.RutaProyecto));
 
             if (exitCode == 0) { Log("Compilación exitosa."); SetProgress(100); }
             else { Log("[ERR] Compilación fallida."); SetProgress(0); }
@@ -230,21 +261,24 @@ namespace Instalador
 
         private async void BtnPublicar_Click(object sender, RoutedEventArgs e)
         {
+            var p = config.GetProyectoActual();
+            if (p == null) return;
+
             LogEntries.Clear();
-            Log($"=== PUBLICAR SINGLE-FILE ({SelectedConfig}) ===");
+            Log($"=== PUBLICAR SINGLE-FILE: {p.Nombre} ({SelectedConfig}) ===");
             SetProgress(0);
             IniciarCronometro();
 
-            string csprojPath = ObtenerCsproj();
+            string? csprojPath = ObtenerCsproj();
             if (csprojPath == null) return;
 
-            string outputDir = Path.Combine(config.RutaPublicacion, "win-x64-singlefile");
-            if (!Directory.Exists(config.RutaPublicacion)) Directory.CreateDirectory(config.RutaPublicacion);
+            string outputDir = Path.Combine(p.RutaPublicacion, "win-x64-singlefile");
+            if (!Directory.Exists(p.RutaPublicacion)) Directory.CreateDirectory(p.RutaPublicacion);
 
             string args = $"publish \"{csprojPath}\" -c {SelectedConfig} -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishTrimmed=false -o \"{outputDir}\"";
 
             int exitCode = -1;
-            await Task.Run(() => exitCode = RunProcess("dotnet", args, config.RutaProyecto));
+            await Task.Run(() => exitCode = RunProcess("dotnet", args, p.RutaProyecto));
 
             if (exitCode == 0 && Directory.Exists(outputDir) && Directory.GetFiles(outputDir).Length > 0)
             {
@@ -259,10 +293,13 @@ namespace Instalador
 
         private async void BtnZipPortable_Click(object sender, RoutedEventArgs e)
         {
+            var p = config.GetProyectoActual();
+            if (p == null) return;
+
             Log("=== CREAR ZIP PORTABLE ===");
             IniciarCronometro();
-            string outputDir = Path.Combine(config.RutaPublicacion, "win-x64-singlefile");
-            string zipPath = Path.Combine(config.RutaPublicacion, $"{config.NombreProyecto}_Portable.zip");
+            string outputDir = Path.Combine(p.RutaPublicacion, "win-x64-singlefile");
+            string zipPath = Path.Combine(p.RutaPublicacion, $"{p.Nombre}_Portable.zip");
             
             await Task.Run(() => CrearZipConProgreso(outputDir, zipPath));
             
@@ -272,24 +309,29 @@ namespace Instalador
 
         private async void BtnZipSingleFile_Click(object sender, RoutedEventArgs e)
         {
+            var p = config.GetProyectoActual();
+            if (p == null) return;
+
             Log("=== CREAR ZIP SINGLE-FILE ===");
             IniciarCronometro();
-            string outputDir = Path.Combine(config.RutaPublicacion, "win-x64-singlefile");
-            string zipPath = Path.Combine(config.RutaPublicacion, $"{config.NombreProyecto}_SingleFile.zip");
+            string outputDir = Path.Combine(p.RutaPublicacion, "win-x64-singlefile");
+            string zipPath = Path.Combine(p.RutaPublicacion, $"{p.Nombre}_SingleFile.zip");
 
-            // Aquí podrías filtrar si solo quieres el exe, pero el usuario suele querer la carpeta mínima
             await Task.Run(() => CrearZipConProgreso(outputDir, zipPath));
 
             Log("ZIP SingleFile creado exitosamente.");
             DetenerCronometro();
         }
 
-        private string ObtenerCsproj()
+        private string? ObtenerCsproj()
         {
-            string path = Path.Combine(config.RutaProyecto, $"{config.NombreProyecto}.csproj");
+            var p = config.GetProyectoActual();
+            if (p == null) return null;
+
+            string path = Path.Combine(p.RutaProyecto, $"{p.Nombre}.csproj");
             if (File.Exists(path)) return path;
 
-            var archivos = Directory.GetFiles(config.RutaProyecto, "*.csproj");
+            var archivos = Directory.GetFiles(p.RutaProyecto, "*.csproj");
             if (archivos.Length > 0)
             {
                 Log($"[INFO] Usando: {Path.GetFileName(archivos[0])}");
@@ -297,13 +339,16 @@ namespace Instalador
             }
             Log("[ERR] No se encontró .csproj");
             DetenerCronometro();
-            return null!;
+            return null;
         }
 
         private async void BtnInstalador_Click(object sender, RoutedEventArgs e)
         {
+            var p = config.GetProyectoActual();
+            if (p == null) return;
+
             LogEntries.Clear();
-            Log("=== GENERAR INSTALADOR ===");
+            Log($"=== GENERAR INSTALADOR: {p.Nombre} ===");
             SetProgress(0);
             IniciarCronometro();
 
@@ -314,9 +359,9 @@ namespace Instalador
             if (!File.Exists(issScript))
                 issScript = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)!.Parent!.Parent!.FullName, "installer.iss");
 
-            string args = $"/Sspawn=0 /V=1 /DMyAppName=\"{config.NombreProyecto}\" /DMyAppVersion=\"{config.VersionInstalador}\" /DMyAppExeName=\"{config.NombreProyecto}.exe\" /DPublishDir=\"{Path.Combine(config.RutaPublicacion, "win-x64-singlefile")}\" /O\"{config.RutaPublicacion}\" \"{issScript}\"";
+            string args = $"/Sspawn=0 /V=1 /DMyAppName=\"{p.Nombre}\" /DMyAppVersion=\"{p.VersionInstalador}\" /DMyAppExeName=\"{p.Nombre}.exe\" /DPublishDir=\"{Path.Combine(p.RutaPublicacion, "win-x64-singlefile")}\" /O\"{p.RutaPublicacion}\" \"{issScript}\"";
 
-            await Task.Run(() => RunProcess(iss, args, config.RutaProyecto));
+            await Task.Run(() => RunProcess(iss, args, p.RutaProyecto));
             Log("Proceso de instalador finalizado.");
             SetProgress(100);
             DetenerCronometro();
@@ -324,29 +369,32 @@ namespace Instalador
 
         private async void BtnEjecutarTodo_Click(object sender, RoutedEventArgs e)
         {
+            var p = config.GetProyectoActual();
+            if (p == null) return;
+
             LogEntries.Clear();
-            Log($"=== EJECUTAR TODO ({SelectedConfig}) ===");
+            Log($"=== EJECUTAR TODO: {p.Nombre} ({SelectedConfig}) ===");
             SetProgress(0);
             IniciarCronometro();
 
-            string csproj = ObtenerCsproj();
+            string? csproj = ObtenerCsproj();
             if (csproj == null) return;
 
             Log("Iniciando flujo completo...");
             await Task.Run(() => {
                 // Build
-                if (RunProcess("dotnet", $"build -c {SelectedConfig}", config.RutaProyecto) != 0) return;
+                if (RunProcess("dotnet", $"build -c {SelectedConfig}", p.RutaProyecto) != 0) return;
                 SetProgress(20);
 
                 // Publish
-                string outputDir = Path.Combine(config.RutaPublicacion, "win-x64-singlefile");
+                string outputDir = Path.Combine(p.RutaPublicacion, "win-x64-singlefile");
                 string args = $"publish \"{csproj}\" -c {SelectedConfig} -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishTrimmed=false -o \"{outputDir}\"";
-                if (RunProcess("dotnet", args, config.RutaProyecto) != 0) return;
+                if (RunProcess("dotnet", args, p.RutaProyecto) != 0) return;
                 CopiarRecursos();
                 SetProgress(40);
 
                 // ZIPs (Portable)
-                string zipPath = Path.Combine(config.RutaPublicacion, $"{config.NombreProyecto}_Portable.zip");
+                string zipPath = Path.Combine(p.RutaPublicacion, $"{p.Nombre}_Portable.zip");
                 CrearZipConProgreso(outputDir, zipPath);
                 SetProgress(60);
 
@@ -358,8 +406,8 @@ namespace Instalador
                     if (!File.Exists(issScript))
                         issScript = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)!.Parent!.Parent!.FullName, "installer.iss");
 
-                    string iArgs = $"/Sspawn=0 /V=1 /DMyAppName=\"{config.NombreProyecto}\" /DMyAppVersion=\"{config.VersionInstalador}\" /DMyAppExeName=\"{config.NombreProyecto}.exe\" /DPublishDir=\"{outputDir}\" /O\"{config.RutaPublicacion}\" \"{issScript}\"";
-                    RunProcess(iss, iArgs, config.RutaProyecto);
+                    string iArgs = $"/Sspawn=0 /V=1 /DMyAppName=\"{p.Nombre}\" /DMyAppVersion=\"{p.VersionInstalador}\" /DMyAppExeName=\"{p.Nombre}.exe\" /DPublishDir=\"{outputDir}\" /O\"{p.RutaPublicacion}\" \"{issScript}\"";
+                    RunProcess(iss, iArgs, p.RutaProyecto);
                 }
                 
                 SetProgress(100);
