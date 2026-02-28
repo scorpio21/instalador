@@ -51,14 +51,17 @@ namespace Instalador.Views
 
         private void MenuInstrucciones_Click(object sender, RoutedEventArgs e)
         {
-            string msg = "MANUAL DE USO RÁPIDO:\n\n" +
+            string msg = "MANUAL DE USO RÁPIDO (v1.1.0):\n\n" +
                          "1. Selecciona tu proyecto en el selector superior.\n" +
                          "2. Usa 'Limpiar' para preparar el entorno.\n" +
                          "3. 'Compilar' verifica que el código sea correcto.\n" +
-                         "4. 'Publicar' genera el Single-File y copia recursos.\n" +
+                         "4. 'Publicar' aplica tus ajustes (ReadyToRun, Trim, etc).\n" +
                          "5. 'Generar Instalador' crea el setup final.\n" +
                          "6. 'EJECUTAR TODO' automatiza todo el flujo.\n\n" +
-                         "Tip: El punto naranja en la barra inferior indica cambios pendientes en Git.";
+                         "Novedades Power User:\n" +
+                         "• Recibirás una notificación Toast al finalizar.\n" +
+                         "• Usa 'Auto-Detectar' en Ajustes para Inno Setup.\n" +
+                         "• El punto naranja indica cambios en Git.";
             System.Windows.MessageBox.Show(msg, "Instrucciones", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
