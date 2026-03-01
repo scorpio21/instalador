@@ -133,26 +133,89 @@ namespace Instalador.ViewModels
             await _buildService.RunPublishAsync(ProyectoSeleccionado, AddLog);
         }
 
+        private async Task CopiarRecursos()
+        {
+            if (ProyectoSeleccionado == null) return;
+            AddLog("Copiando recursos (img, README)...");
+            
+            await Task.Run(() => 
+            {
+                string sourceProject = ProyectoSeleccionado.RutaProyecto;
+                string destDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
+                
+                try 
+                {
+                    // Copiar carpeta img/
+                    string sourceImg = Path.Combine(sourceProject, "img");
+                    if (Directory.Exists(sourceImg))
+                    {
+                        string destImg = Path.Combine(destDir, "img");
+                        CopyDirectory(sourceImg, destImg);
+                    }
+                    
+                    // Copiar README.md
+                    string sourceReadme = Path.Combine(sourceProject, "README.md");
+                    if (File.Exists(sourceReadme))
+                    {
+                        File.Copy(sourceReadme, Path.Combine(destDir, "README.md"), true);
+                    }
+                } 
+                catch (Exception ex)
+                {
+                    AddLog("[WARN] Copiando recursos: " + ex.Message);
+                }
+            });
+        }
+
+        private void CopyDirectory(string sourceDir, string destinationDir)
+        {
+            var dir = new DirectoryInfo(sourceDir);
+            if (!dir.Exists) throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            Directory.CreateDirectory(destinationDir);
+
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetFilePath, true);
+            }
+
+            foreach (DirectoryInfo subDir in dirs)
+            {
+                string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                CopyDirectory(subDir.FullName, newDestinationDir);
+            }
+        }
+
         private async Task EjecutarZip()
         {
             if (ProyectoSeleccionado == null) return;
-            AddLog("Generando archivo ZIP...");
+            AddLog("Generando archivos ZIP (Portable y Single-File)...");
             string sourceDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
-            string zipFile = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile.zip");
+            
+            // 3b) Crear versión portable (ZIP) -> Proyecto_v1.0_Portable.zip
+            string zipPortable = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_Portable.zip");
+            
+            // 3c) Crear ZIP win-x64 -> Proyecto_v1.0_win-x64_singlefile.zip
+            string zipWinX64 = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_win-x64_singlefile.zip");
             
             await Task.Run(() => 
             {
                 try 
                 {
-                    if (File.Exists(zipFile)) File.Delete(zipFile);
+                    if (File.Exists(zipPortable)) File.Delete(zipPortable);
+                    if (File.Exists(zipWinX64)) File.Delete(zipWinX64);
+                    
                     if (Directory.Exists(sourceDir))
                     {
-                        System.IO.Compression.ZipFile.CreateFromDirectory(sourceDir, zipFile);
-                        AddLog("ZIP generado con éxito.");
+                        System.IO.Compression.ZipFile.CreateFromDirectory(sourceDir, zipPortable);
+                        System.IO.Compression.ZipFile.CreateFromDirectory(sourceDir, zipWinX64);
+                        AddLog("Archivos ZIP generados con éxito.");
                     }
                     else 
                     {
-                        AddLog($"[ERROR] Carpeta {sourceDir} no encontrada.");
+                        AddLog($"[ERROR] Carpeta {sourceDir} no encontrada para zipear.");
                     }
                 } 
                 catch(Exception e) 
@@ -172,20 +235,20 @@ namespace Instalador.ViewModels
             if (!string.IsNullOrEmpty(_config.RutaInnoSetup) && File.Exists(_config.RutaInnoSetup))
             {
                 string publishDirStr = Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
+                
+                // La salida del Setup(.exe) generada por Inno irá a RutaPublicacion (publish/)
                 string args = $"/O\"{ProyectoSeleccionado.RutaPublicacion}\" /dMyAppName=\"{ProyectoSeleccionado.Nombre}\" /dMyAppVersion=\"{ProyectoSeleccionado.VersionInstalador}\" /dMyAppExeName=\"{ProyectoSeleccionado.Nombre}.exe\" /dPublishDir=\"{publishDirStr}\" \"{issPath}\"";
                 
                 AddLog("Compilando con ISCC.exe...");
                 bool ok = await _buildService.RunCommandAsync(_config.RutaInnoSetup, args, ProyectoSeleccionado.RutaProyecto, AddLog);
                 
-                if (ok) AddLog("Instalador generado correctamente.");
+                if (ok) AddLog("Instalador .exe generado correctamente en carpeta publish.");
                 else AddLog("[ERROR] Fallo al compilar el instalador con Inno Setup.");
             }
             else
             {
                  AddLog("[ERROR] Ruta a Inno Setup (ISCC.exe) no configurada. Ve a Ajustes y dale a Auto-Detectar.");
             }
-
-            _notificationService.Notify("Proceso Inno Setup", $"El instalador para {ProyectoSeleccionado.Nombre} ha finalizado.");
         }
 
         private async Task EjecutarTodo()
@@ -193,6 +256,7 @@ namespace Instalador.ViewModels
             await EjecutarLimpiar();
             await EjecutarBuild();
             await EjecutarPublish();
+            await CopiarRecursos();
             await EjecutarInstaller();
             await EjecutarZip();
             _notificationService.Notify("Proceso Completado", "Todas las tareas han finalizado con éxito.");

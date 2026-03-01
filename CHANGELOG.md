@@ -13,6 +13,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 ### 🐛 Corregido
 
 - **Persistencia de Proyectos**: Asegurado el guardado correcto de nuevos proyectos al cerrar la ventana de configuración.
+- **Empaquetado Completo**: El proceso ahora empaqueta correctamente tanto los subdirectorios y recursos (como `img`) mediante la configuración del `.csproj` (`<Content CopyToOutputDirectory>`), y el archivo `.zip` resultante se genera finalmente invocando la función `EjecutarZip` en la cadena principal.
 - **Sincronización de UI**: Los campos de ruta ahora se actualizan instantáneamente al elegir una carpeta mediante el diálogo de selección (implementado `INotifyPropertyChanged`).
 
 ## v1.1.0 - 2026-02-28
