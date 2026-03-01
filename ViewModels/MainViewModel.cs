@@ -138,7 +138,7 @@ namespace Instalador.ViewModels
             if (ProyectoSeleccionado == null) return;
             AddLog("Generando archivo ZIP...");
             string sourceDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
-            string zipFile = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, $"{ProyectoSeleccionado.Nombre}_v{ProyectoSeleccionado.VersionInstalador}.zip");
+            string zipFile = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile.zip");
             
             await Task.Run(() => 
             {
@@ -194,6 +194,7 @@ namespace Instalador.ViewModels
             await EjecutarBuild();
             await EjecutarPublish();
             await EjecutarInstaller();
+            await EjecutarZip();
             _notificationService.Notify("Proceso Completado", "Todas las tareas han finalizado con éxito.");
         }
 
