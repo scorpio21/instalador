@@ -136,19 +136,56 @@ namespace Instalador.ViewModels
         private async Task EjecutarZip()
         {
             if (ProyectoSeleccionado == null) return;
-            AddLog("Generando ZIP (Simulado para MVVM proof)...");
-            await Task.Delay(1000);
-            AddLog("ZIP Generado con éxito.");
+            AddLog("Generando archivo ZIP...");
+            string sourceDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
+            string zipFile = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, $"{ProyectoSeleccionado.Nombre}_v{ProyectoSeleccionado.VersionInstalador}.zip");
+            
+            await Task.Run(() => 
+            {
+                try 
+                {
+                    if (File.Exists(zipFile)) File.Delete(zipFile);
+                    if (Directory.Exists(sourceDir))
+                    {
+                        System.IO.Compression.ZipFile.CreateFromDirectory(sourceDir, zipFile);
+                        AddLog("ZIP generado con éxito.");
+                    }
+                    else 
+                    {
+                        AddLog($"[ERROR] Carpeta {sourceDir} no encontrada.");
+                    }
+                } 
+                catch(Exception e) 
+                {
+                    AddLog("[ERROR ZIP] " + e.Message);
+                }
+            });
         }
 
         private async Task EjecutarInstaller()
         {
             if (ProyectoSeleccionado == null) return;
-            AddLog("Generando instalador...");
-            _innoService.GenerarScript(ProyectoSeleccionado, Path.Combine(ProyectoSeleccionado.RutaProyecto, "installer.iss"));
-            AddLog("Script .iss generado. Inicie ISCC.exe para finalizar.");
-            _notificationService.Notify("Instalador Generado", $"El script para {ProyectoSeleccionado.Nombre} está listo.");
-            await Task.CompletedTask;
+            AddLog("Preparando instalador de Inno Setup...");
+            string issPath = Path.Combine(ProyectoSeleccionado.RutaProyecto, "installer.iss");
+            _innoService.GenerarScript(ProyectoSeleccionado, issPath);
+            
+            if (!string.IsNullOrEmpty(_config.RutaInnoSetup) && File.Exists(_config.RutaInnoSetup))
+            {
+                string publishDirStr = Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
+                string args = $"/O\"{ProyectoSeleccionado.RutaPublicacion}\" /dMyAppName=\"{ProyectoSeleccionado.Nombre}\" /dMyAppVersion=\"{ProyectoSeleccionado.VersionInstalador}\" /dMyAppExeName=\"{ProyectoSeleccionado.Nombre}.exe\" /dPublishDir=\"{publishDirStr}\" \"{issPath}\"";
+                
+                AddLog("Compilando con ISCC.exe...");
+                bool ok = await _buildService.RunCommandAsync(_config.RutaInnoSetup, args, ProyectoSeleccionado.RutaProyecto, AddLog);
+                
+                if (ok) AddLog("Instalador generado correctamente.");
+                else AddLog("[ERROR] Fallo al compilar el instalador con Inno Setup.");
+            }
+            else
+            {
+                 AddLog("[ERROR] Ruta a Inno Setup (ISCC.exe) no configurada. Ve a Ajustes y dale a Auto-Detectar.");
+            }
+
+            _notificationService.Notify("Proceso Inno Setup", $"El instalador para {ProyectoSeleccionado.Nombre} ha finalizado.");
         }
 
         private async Task EjecutarTodo()

@@ -51,7 +51,7 @@ namespace Instalador.Services
 
         public async Task RunPublishAsync(ProyectoConfig p, Action<string> onLog)
         {
-            string outputDir = p.RutaPublicacion;
+            string outputDir = System.IO.Path.Combine(p.RutaPublicacion, "win-x64-singlefile");
             string flags = "-r win-x64 --self-contained true /p:PublishSingleFile=true";
             
             if (p.ReadyToRun) flags += " /p:PublishReadyToRun=true";

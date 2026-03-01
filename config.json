@@ -8,6 +8,15 @@
       "ReadyToRun": true,
       "Trimmed": false,
       "Compressed": true
+    },
+    {
+      "Nombre": "Instalador2",
+      "RutaProyecto": "K:\\Instaladorpersonal\\Instalador2",
+      "RutaPublicacion": "K:\\Instaladorpersonal\\Instalador2\\publish",
+      "VersionInstalador": "1.1.0",
+      "ReadyToRun": true,
+      "Trimmed": false,
+      "Compressed": true
     }
   ],
   "UltimoProyectoSeleccionado": "Instalador2",
