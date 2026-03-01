@@ -110,14 +110,26 @@ namespace Instalador.ViewModels
         private async Task EjecutarLimpiar()
         {
             if (ProyectoSeleccionado == null) return;
-            AddLog($"Iniciando limpieza de {ProyectoSeleccionado.Nombre}...");
             string publishDir = GetAbsolutePublishDir();
+            AddLog($"Iniciando limpieza de {ProyectoSeleccionado.Nombre}...");
+            AddLog($"- [DEBUG] Ruta evaluada a limpiar: {publishDir}");
+            
             if (Directory.Exists(publishDir))
             {
-                try { Directory.Delete(publishDir, true); AddLog("Carpeta de publicación eliminada."); }
-                catch (Exception ex) { AddLog("[WARN] No se pudo borrar carpeta: " + ex.Message); }
+                try 
+                { 
+                    Directory.Delete(publishDir, true); 
+                    AddLog("Carpeta de publicación eliminada completa."); 
+                }
+                catch (Exception ex) 
+                { 
+                    AddLog("[WARN] No se pudo borrar carpeta: " + ex.Message); 
+                }
             }
-            else AddLog("La carpeta ya estaba limpia.");
+            else 
+            {
+                AddLog("La carpeta ya estaba limpia (no se detectó directorio).");
+            }
             IsProjectReady = true;
             await Task.CompletedTask;
         }

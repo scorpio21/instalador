@@ -55,16 +55,17 @@ namespace Instalador.Models
         {
             try
             {
-                string fullPath = Path.GetFullPath(ArchivoConfig);
+                string currentDir = AppContext.BaseDirectory;
+                string fullPath = Path.Combine(currentDir, ArchivoConfig);
                 Console.WriteLine($"[CONFIG] Cargando desde: {fullPath}");
 
-                if (!File.Exists(ArchivoConfig))
+                if (!File.Exists(fullPath))
                 {
                     Console.WriteLine("[CONFIG] Archivo no existe, creando nuevo.");
                     return new Config();
                 }
 
-                string json = File.ReadAllText(ArchivoConfig);
+                string json = File.ReadAllText(fullPath);
                 var config = JsonSerializer.Deserialize<Config>(json) ?? new Config();
                 
                 Console.WriteLine($"[CONFIG] Proyectos cargados: {config.Proyectos.Count}");

@@ -12,9 +12,6 @@
 
   <ItemGroup>
     <Resource Include="img\ico\Installer.ico" />
-    <Content Include="img\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

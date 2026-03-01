@@ -16,6 +16,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 - **Empaquetado Universal**: El Instalador ahora copia automáticamente carpetas estáticas como `img` y archivos como `README.md` a la carpeta de publicación independientemente del `.csproj` del proyecto destino. Además, genera correctamente tanto el `.zip` Portable como el `.zip` Single-File tal y como específica el flujo de automatización de Inno Setup.
 - **Botones de menú ZIP Separados**: Resolvimos un error donde los botones "Crear ZIP Portable" y "Crear ZIP Single-File" en la interfaz disparaban la misma función y creaban ambos archivos simultáneamente. Ahora cada opción generará específicamente el fichero que indica.
 - **Rutas Absolutas de Publicación**: Se arregló un bug donde operaciones de Limpieza, ZIP o InnoSetup en C# usaban la ruta parcial interna del programa (ej: `publish`) pensando que estaba vacía en vez de localizar la carpeta de publicación auténtica adscrita al directorio del proyecto seleccionado.
+- **Crash Fix de Archivo Único (.exe)**: Se subsanó un conflicto en `.csproj` donde la carpeta `img\**` generaba una doble asignación para los archivos WPF (`Resource` vs `Content`), lo que ocasionaba que el ejecutable "Single-File" de la aplicación hiciera _crash_ instantáneo al iniciar por no poder descifrar los símbolos XAML del icono en memoria.
 - **Sincronización de UI**: Los campos de ruta ahora se actualizan instantáneamente al elegir una carpeta mediante el diálogo de selección (implementado `INotifyPropertyChanged`).
 
 ## v1.1.0 - 2026-02-28
