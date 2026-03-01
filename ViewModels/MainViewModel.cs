@@ -42,7 +42,8 @@ namespace Instalador.ViewModels
             ActualizarGitCommand = new RelayCommand(async _ => await ActualizarEstadoGit());
             BuildCommand = new RelayCommand(async _ => await EjecutarBuild());
             PublishCommand = new RelayCommand(async _ => await EjecutarPublish());
-            ZipCommand = new RelayCommand(async _ => await EjecutarZip());
+            ZipPortableCommand = new RelayCommand(async _ => await EjecutarZipPortable());
+            ZipSingleFileCommand = new RelayCommand(async _ => await EjecutarZipSingleFile());
             InstallerCommand = new RelayCommand(async _ => await EjecutarInstaller());
             RunAllCommand = new RelayCommand(async _ => await EjecutarTodo());
             
@@ -93,7 +94,8 @@ namespace Instalador.ViewModels
         public ICommand ActualizarGitCommand { get; }
         public ICommand BuildCommand { get; }
         public ICommand PublishCommand { get; }
-        public ICommand ZipCommand { get; }
+        public ICommand ZipPortableCommand { get; }
+        public ICommand ZipSingleFileCommand { get; }
         public ICommand InstallerCommand { get; }
         public ICommand RunAllCommand { get; }
 
@@ -188,30 +190,35 @@ namespace Instalador.ViewModels
             }
         }
 
-        private async Task EjecutarZip()
+        private async Task EjecutarZipPortable()
         {
             if (ProyectoSeleccionado == null) return;
-            AddLog("Generando archivos ZIP (Portable y Single-File)...");
+            AddLog("Generando ZIP Portable...");
             string sourceDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
-            
-            // 3b) Crear versión portable (ZIP) -> Proyecto_v1.0_Portable.zip
             string zipPortable = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_Portable.zip");
-            
-            // 3c) Crear ZIP win-x64 -> Proyecto_v1.0_win-x64_singlefile.zip
+            await ComprimirCarpetaAsync(sourceDir, zipPortable);
+        }
+
+        private async Task EjecutarZipSingleFile()
+        {
+            if (ProyectoSeleccionado == null) return;
+            AddLog("Generando ZIP Single-File...");
+            string sourceDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
             string zipWinX64 = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_win-x64_singlefile.zip");
-            
+            await ComprimirCarpetaAsync(sourceDir, zipWinX64);
+        }
+
+        private async Task ComprimirCarpetaAsync(string sourceDir, string destZip)
+        {
             await Task.Run(() => 
             {
                 try 
                 {
-                    if (File.Exists(zipPortable)) File.Delete(zipPortable);
-                    if (File.Exists(zipWinX64)) File.Delete(zipWinX64);
-                    
+                    if (File.Exists(destZip)) File.Delete(destZip);
                     if (Directory.Exists(sourceDir))
                     {
-                        System.IO.Compression.ZipFile.CreateFromDirectory(sourceDir, zipPortable);
-                        System.IO.Compression.ZipFile.CreateFromDirectory(sourceDir, zipWinX64);
-                        AddLog("Archivos ZIP generados con éxito.");
+                        System.IO.Compression.ZipFile.CreateFromDirectory(sourceDir, destZip);
+                        AddLog($"ZIP generado: {System.IO.Path.GetFileName(destZip)}");
                     }
                     else 
                     {
@@ -258,7 +265,8 @@ namespace Instalador.ViewModels
             await EjecutarPublish();
             await CopiarRecursos();
             await EjecutarInstaller();
-            await EjecutarZip();
+            await EjecutarZipPortable();
+            await EjecutarZipSingleFile();
             _notificationService.Notify("Proceso Completado", "Todas las tareas han finalizado con éxito.");
         }
 
