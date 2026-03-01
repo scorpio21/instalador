@@ -111,9 +111,10 @@ namespace Instalador.ViewModels
         {
             if (ProyectoSeleccionado == null) return;
             AddLog($"Iniciando limpieza de {ProyectoSeleccionado.Nombre}...");
-            if (Directory.Exists(ProyectoSeleccionado.RutaPublicacion))
+            string publishDir = GetAbsolutePublishDir();
+            if (Directory.Exists(publishDir))
             {
-                try { Directory.Delete(ProyectoSeleccionado.RutaPublicacion, true); AddLog("Carpeta de publicación eliminada."); }
+                try { Directory.Delete(publishDir, true); AddLog("Carpeta de publicación eliminada."); }
                 catch (Exception ex) { AddLog("[WARN] No se pudo borrar carpeta: " + ex.Message); }
             }
             else AddLog("La carpeta ya estaba limpia.");
@@ -143,7 +144,7 @@ namespace Instalador.ViewModels
             await Task.Run(() => 
             {
                 string sourceProject = ProyectoSeleccionado.RutaProyecto;
-                string destDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
+                string destDir = System.IO.Path.Combine(GetAbsolutePublishDir(), "win-x64-singlefile");
                 
                 try 
                 {
@@ -194,8 +195,9 @@ namespace Instalador.ViewModels
         {
             if (ProyectoSeleccionado == null) return;
             AddLog("Generando ZIP Portable...");
-            string sourceDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
-            string zipPortable = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_Portable.zip");
+            string absolutePublish = GetAbsolutePublishDir();
+            string sourceDir = System.IO.Path.Combine(absolutePublish, "win-x64-singlefile");
+            string zipPortable = System.IO.Path.Combine(absolutePublish, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_Portable.zip");
             await ComprimirCarpetaAsync(sourceDir, zipPortable);
         }
 
@@ -203,8 +205,9 @@ namespace Instalador.ViewModels
         {
             if (ProyectoSeleccionado == null) return;
             AddLog("Generando ZIP Single-File...");
-            string sourceDir = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
-            string zipWinX64 = System.IO.Path.Combine(ProyectoSeleccionado.RutaPublicacion, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_win-x64_singlefile.zip");
+            string absolutePublish = GetAbsolutePublishDir();
+            string sourceDir = System.IO.Path.Combine(absolutePublish, "win-x64-singlefile");
+            string zipWinX64 = System.IO.Path.Combine(absolutePublish, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_win-x64_singlefile.zip");
             await ComprimirCarpetaAsync(sourceDir, zipWinX64);
         }
 
@@ -241,10 +244,11 @@ namespace Instalador.ViewModels
             
             if (!string.IsNullOrEmpty(_config.RutaInnoSetup) && File.Exists(_config.RutaInnoSetup))
             {
-                string publishDirStr = Path.Combine(ProyectoSeleccionado.RutaPublicacion, "win-x64-singlefile");
+                string absolutePublish = GetAbsolutePublishDir();
+                string publishDirStr = Path.Combine(absolutePublish, "win-x64-singlefile");
                 
                 // La salida del Setup(.exe) generada por Inno irá a RutaPublicacion (publish/)
-                string args = $"/O\"{ProyectoSeleccionado.RutaPublicacion}\" /dMyAppName=\"{ProyectoSeleccionado.Nombre}\" /dMyAppVersion=\"{ProyectoSeleccionado.VersionInstalador}\" /dMyAppExeName=\"{ProyectoSeleccionado.Nombre}.exe\" /dPublishDir=\"{publishDirStr}\" \"{issPath}\"";
+                string args = $"/O\"{absolutePublish}\" /dMyAppName=\"{ProyectoSeleccionado.Nombre}\" /dMyAppVersion=\"{ProyectoSeleccionado.VersionInstalador}\" /dMyAppExeName=\"{ProyectoSeleccionado.Nombre}.exe\" /dPublishDir=\"{publishDirStr}\" \"{issPath}\"";
                 
                 AddLog("Compilando con ISCC.exe...");
                 bool ok = await _buildService.RunCommandAsync(_config.RutaInnoSetup, args, ProyectoSeleccionado.RutaProyecto, AddLog);
@@ -268,6 +272,15 @@ namespace Instalador.ViewModels
             await EjecutarZipPortable();
             await EjecutarZipSingleFile();
             _notificationService.Notify("Proceso Completado", "Todas las tareas han finalizado con éxito.");
+        }
+
+        private string GetAbsolutePublishDir()
+        {
+            if (ProyectoSeleccionado == null) return "";
+            if (string.IsNullOrWhiteSpace(ProyectoSeleccionado.RutaPublicacion)) return ProyectoSeleccionado.RutaProyecto;
+            return Path.IsPathRooted(ProyectoSeleccionado.RutaPublicacion) 
+                ? ProyectoSeleccionado.RutaPublicacion 
+                : Path.Combine(ProyectoSeleccionado.RutaProyecto, ProyectoSeleccionado.RutaPublicacion);
         }
 
         public void AddLog(string mensaje)
