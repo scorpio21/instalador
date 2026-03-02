@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Media.Animation;
 using Microsoft.Win32;
 using Instalador.ViewModels;
 using Forms = System.Windows.Forms;
@@ -7,9 +9,39 @@ namespace Instalador.Views
 {
     public partial class ConfigWindow : Window
     {
+        private bool _estaCerrando;
+
         public ConfigWindow()
         {
             InitializeComponent();
+
+            Loaded += ConfigWindow_Loaded;
+            Closing += ConfigWindow_Closing;
+        }
+
+        private void ConfigWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Resources["AnimAbrir"] is Storyboard sb)
+            {
+                sb.Begin();
+            }
+        }
+
+        private void ConfigWindow_Closing(object? sender, CancelEventArgs e)
+        {
+            if (_estaCerrando) return;
+
+            e.Cancel = true;
+            _estaCerrando = true;
+
+            if (Resources["AnimCerrar"] is Storyboard sb)
+            {
+                sb.Completed += (_, __) => Close();
+                sb.Begin();
+                return;
+            }
+
+            Close();
         }
 
         private void BtnSeleccionarProyecto_Click(object sender, RoutedEventArgs e)

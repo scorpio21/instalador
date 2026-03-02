@@ -4,6 +4,14 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
+## v1.1.4 - 2026-03-02
+
+### ✨ Añadido (Animaciones)
+
+- **🪟 Transición ConfigWindow**: Animación suave al abrir/cerrar la ventana de configuración (fade + slide).
+
+---
+
 ## v1.1.3 - 2026-03-02
 
 ### ✨ Añadido (Validación)

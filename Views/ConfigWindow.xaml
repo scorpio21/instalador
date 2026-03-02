@@ -7,7 +7,22 @@
         WindowStyle="ThreeDBorderWindow"
         Icon="pack://application:,,,/img/ico/Installer.ico">
 
-    <Grid>
+    <Window.Resources>
+        <Storyboard x:Key="AnimAbrir">
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.18" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="12" To="0" Duration="0:0:0.18" />
+        </Storyboard>
+
+        <Storyboard x:Key="AnimCerrar">
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.14" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="0" To="12" Duration="0:0:0.14" />
+        </Storyboard>
+    </Window.Resources>
+
+    <Grid x:Name="Root" Opacity="0">
+        <Grid.RenderTransform>
+            <TranslateTransform Y="12" />
+        </Grid.RenderTransform>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
