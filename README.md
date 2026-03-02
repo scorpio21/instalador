@@ -2,6 +2,8 @@
 
 ![Captura de pantalla del programa](img/menu.png)
 
+**Versión actual: v1.1.1** | ![Licencia MIT](https://img.shields.io/badge/License-MIT-green.svg)
+
 **Elevate your deployment workflow.** Una solución integral de escritorio diseñada para automatizar el ciclo de vida de empaquetado y distribución de aplicaciones .NET con una experiencia de usuario excepcional.
 
 ---

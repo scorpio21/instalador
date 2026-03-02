@@ -4,20 +4,24 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
-## v1.1.1 - 2026-03-01
+## v1.1.1 - 2026-03-02
 
-### ✨ Añadido (Automatización)
+### ✨ Añadido (Control de Compilación)
 
-- **Auto-rellenado Inteligente**: Al seleccionar la carpeta del proyecto, el sistema extrae automáticamente el **Nombre del Proyecto** y configura el **Directorio de Publicación** (`/publish`) por defecto.
+- **🔄 Selector Release/Debug**: Implementación completa del selector dinámico para alternar entre configuraciones de compilación Release y Debug en tiempo real.
+- **📡 Integración con BuildService**: El ComboBox ahora controla directamente el parámetro `-c` del comando `dotnet publish`.
+- **📊 Feedback Visual**: El log muestra la configuración seleccionada: "Publicando proyecto (Release)..." o "Publicando proyecto (Debug)...".
+
+### 🛠️ Mejorado
+
+- **🔧 Binding de Datos**: Conectado el ComboBox `ComboConfig` con la propiedad `BuildConfiguration` usando `SelectedValue` y `SelectedValuePath="Tag"`.
+- **⚙️ Arquitectura Extendida**: Modificada la interfaz `IBuildService` para aceptar configuración dinámica con valor por defecto "Release".
 
 ### 🐛 Corregido
 
-- **Persistencia de Proyectos**: Asegurado el guardado correcto de nuevos proyectos al cerrar la ventana de configuración.
-- **Empaquetado Universal**: El Instalador ahora copia automáticamente carpetas estáticas como `img` y archivos como `README.md` a la carpeta de publicación independientemente del `.csproj` del proyecto destino. Además, genera correctamente tanto el `.zip` Portable como el `.zip` Single-File tal y como específica el flujo de automatización de Inno Setup.
-- **Botones de menú ZIP Separados**: Resolvimos un error donde los botones "Crear ZIP Portable" y "Crear ZIP Single-File" en la interfaz disparaban la misma función y creaban ambos archivos simultáneamente. Ahora cada opción generará específicamente el fichero que indica.
-- **Rutas Absolutas de Publicación**: Se arregló un bug donde operaciones de Limpieza, ZIP o InnoSetup en C# usaban la ruta parcial interna del programa (ej: `publish`) pensando que estaba vacía en vez de localizar la carpeta de publicación auténtica adscrita al directorio del proyecto seleccionado.
-- **Crash Fix de Archivo Único (.exe)**: Se subsanó un conflicto en `.csproj` donde la carpeta `img\**` generaba una doble asignación para los archivos WPF (`Resource` vs `Content`), lo que ocasionaba que el ejecutable "Single-File" de la aplicación hiciera _crash_ instantáneo al iniciar por no poder descifrar los símbolos XAML del icono en memoria.
-- **Sincronización de UI**: Los campos de ruta ahora se actualizan instantáneamente al elegir una carpeta mediante el diálogo de selección (implementado `INotifyPropertyChanged`).
+- **🎯 Configuración Dinámica**: Resuelto el hardcodeo de "Release" en `BuildService.RunPublishAsync()` para permitir cambio en tiempo de ejecución.
+
+---
 
 ## v1.1.0 - 2026-02-28
 
