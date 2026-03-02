@@ -4,6 +4,14 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
+## v2.0.0 - 2026-03-02
+
+### ✨ Añadido (UI)
+
+- **🪟 Mica/Acrylic en ventana principal**: Efecto moderno en Windows 11 (Mica) con fallback estable en Windows 10 (Acrylic/Blur).
+
+---
+
 ## v1.1.4 - 2026-03-02
 
 ### ✨ Añadido (Animaciones)

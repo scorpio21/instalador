@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
+using Instalador.Helpers;
 using Instalador.Models;
 using Instalador.Services;
 using Instalador.ViewModels;
@@ -10,13 +11,15 @@ namespace Instalador.Views
 {
     public partial class MainWindow : Window
     {
-        public const string AppVersion = "1.1.3";
+        public const string AppVersion = "2.0.0";
         private MainViewModel _viewModel;
         private DispatcherTimer timerHora = new DispatcherTimer();
 
         public MainWindow()
         {
             InitializeComponent();
+
+            SourceInitialized += (_, __) => BackdropHelper.AplicarEfecto(this);
 
             Title = $"Generador de Instalación Premium v{AppVersion}";
             
@@ -48,6 +51,14 @@ namespace Instalador.Views
 
         private void BtnSalir_Click(object sender, RoutedEventArgs e) => Close();
 
+        private void Header_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
         private void BtnConfig_Click(object sender, RoutedEventArgs e)
         {
             var configService = new ConfigService();
@@ -72,7 +83,7 @@ namespace Instalador.Views
 
         private void MenuInstrucciones_Click(object sender, RoutedEventArgs e)
         {
-            string msg = "MANUAL DE USO RÁPIDO (v1.1.4):\n\n" +
+            string msg = "MANUAL DE USO RÁPIDO (v2.0.0):\n\n" +
                          "1. Selecciona tu proyecto en el selector superior.\n" +
                          "2. Usa 'Limpiar' para preparar el entorno.\n" +
                          "3. 'Compilar' verifica que el código sea correcto.\n" +

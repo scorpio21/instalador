@@ -1,14 +1,15 @@
 <Window x:Class="Instalador.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Generador de Instalación Premium" Height="650" Width="1100"
-        Background="#1E1E1E" Foreground="White"
+        Background="Transparent" Foreground="White"
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI"
-        AllowsTransparency="False" WindowStyle="ThreeDBorderWindow"
+        AllowsTransparency="True" WindowStyle="None"
         Icon="pack://application:,,,/img/ico/Installer.ico">
 
 
@@ -17,7 +18,11 @@
         <!-- xmlns:vm="clr-namespace:Instalador.ViewModels" -->
     </Window.Resources>
     
-    <Grid>
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="6" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="True" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Grid Background="#CC1E1E1E">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Menú / Header -->
             <RowDefinition Height="*"/>    <!-- Log -->
@@ -25,7 +30,7 @@
         </Grid.RowDefinitions>
 
         <!-- HEADER / MENU -->
-        <Border Grid.Row="0" Background="#2D2D2D">
+        <Border Grid.Row="0" Background="#2D2D2D" MouseLeftButtonDown="Header_MouseLeftButtonDown">
             <Menu Background="Transparent" Foreground="White" Padding="5">
                 <MenuItem>
                     <MenuItem.Header>
