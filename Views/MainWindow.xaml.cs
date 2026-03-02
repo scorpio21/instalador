@@ -10,13 +10,15 @@ namespace Instalador.Views
 {
     public partial class MainWindow : Window
     {
-        public const string AppVersion = "1.1.1";
+        public const string AppVersion = "1.1.0";
         private MainViewModel _viewModel;
         private DispatcherTimer timerHora = new DispatcherTimer();
 
         public MainWindow()
         {
             InitializeComponent();
+
+            Title = $"Generador de Instalación Premium v{AppVersion}";
             
             var configService = new ConfigService();
             var gitService = new GitService();

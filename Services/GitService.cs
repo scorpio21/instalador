@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Instalador.Services
@@ -36,6 +37,7 @@ namespace Instalador.Services
                     Arguments = args,
                     WorkingDirectory = workingDir,
                     RedirectStandardOutput = true,
+                    StandardOutputEncoding = Encoding.UTF8,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };

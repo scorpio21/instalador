@@ -51,12 +51,50 @@ namespace Instalador.Models
 
         public static string ArchivoConfig => "config.json";
 
+        private static string GetRutaConfigAbsoluta()
+        {
+            string baseDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string carpetaApp = Path.Combine(baseDir, "Instalador");
+            return Path.Combine(carpetaApp, ArchivoConfig);
+        }
+
+        private static string GetRutaConfigLegacy()
+        {
+            string currentDir = AppContext.BaseDirectory;
+            return Path.Combine(currentDir, ArchivoConfig);
+        }
+
+        private static void AsegurarCarpetaConfigExiste(string fullPath)
+        {
+            string? dir = Path.GetDirectoryName(fullPath);
+            if (string.IsNullOrWhiteSpace(dir)) return;
+            Directory.CreateDirectory(dir);
+        }
+
+        private static void MigrarConfigLegacySiExiste(string destino)
+        {
+            try
+            {
+                if (File.Exists(destino)) return;
+
+                string legacy = GetRutaConfigLegacy();
+                if (!File.Exists(legacy)) return;
+
+                AsegurarCarpetaConfigExiste(destino);
+                File.Copy(legacy, destino, overwrite: false);
+            }
+            catch
+            {
+                // Ignorar migración si falla por permisos o archivos bloqueados
+            }
+        }
+
         public static Config Cargar()
         {
             try
             {
-                string currentDir = AppContext.BaseDirectory;
-                string fullPath = Path.Combine(currentDir, ArchivoConfig);
+                string fullPath = GetRutaConfigAbsoluta();
+                MigrarConfigLegacySiExiste(fullPath);
                 Console.WriteLine($"[CONFIG] Cargando desde: {fullPath}");
 
                 if (!File.Exists(fullPath))
@@ -104,7 +142,9 @@ namespace Instalador.Models
         public void Guardar()
         {
             string json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(ArchivoConfig, json);
+            string fullPath = GetRutaConfigAbsoluta();
+            AsegurarCarpetaConfigExiste(fullPath);
+            File.WriteAllText(fullPath, json);
             Console.WriteLine($"[CONFIG] Guardado exitoso. Total proyectos: {Proyectos.Count}");
         }
 

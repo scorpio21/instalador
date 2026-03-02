@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using Instalador.Models;
 
@@ -26,6 +27,8 @@ namespace Instalador.Services
                         WorkingDirectory = workingDir,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
+                        StandardOutputEncoding = Encoding.UTF8,
+                        StandardErrorEncoding = Encoding.UTF8,
                         UseShellExecute = false,
                         CreateNoWindow = true
                     };

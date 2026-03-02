@@ -181,7 +181,7 @@
         </Border>
 
         <!-- LOG AREA -->
-        <ListView Grid.Row="1" x:Name="LvLog" Background="#121212" Foreground="#fc0202ff" BorderThickness="0" Margin="10"
+        <ListView Grid.Row="1" x:Name="LvLog" Background="#121212" Foreground="White" BorderThickness="0" Margin="10"
                   ItemsSource="{Binding LogEntries}">
             <ListView.View>
                 <GridView>
@@ -220,13 +220,39 @@
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Tiempo:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="11"/>
-                    <TextBlock x:Name="TxtTiempo" Text="00:00" VerticalAlignment="Center" FontSize="11"/>
+                    <TextBlock x:Name="TxtTiempo" Text="{Binding TiempoDisplay}" VerticalAlignment="Center" FontSize="11">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Opacity" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding EstaProcesando}" Value="True">
+                                        <Setter Property="Foreground" Value="LightGreen"/>
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard x:Name="ParpadeoTiempoStoryboard">
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                     From="1" To="0.2"
+                                                                     Duration="0:0:0.5"
+                                                                     AutoReverse="True"
+                                                                     RepeatBehavior="Forever" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <StopStoryboard BeginStoryboardName="ParpadeoTiempoStoryboard" />
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
             </StatusBarItem>
 
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <ProgressBar x:Name="ProgressTotal" Height="10" Width="150" Margin="10,0" Background="#33000000" Foreground="#4EC9B0" BorderThickness="0"/>
+                    <ProgressBar x:Name="ProgressTotal" Height="10" Width="150" Margin="10,0" Background="#33000000" Foreground="#4EC9B0" BorderThickness="0" Minimum="0" Maximum="100" Value="{Binding ProgresoTotal}" IsIndeterminate="{Binding ProgresoIndeterminado}"/>
                     <TextBlock x:Name="TxtHora" Text="00:00:00" VerticalAlignment="Center" FontSize="11" Margin="10,0"/>
                     <TextBlock x:Name="TxtAppVersion" Text="{Binding AppVersionDisplay}" FontWeight="Bold" FontSize="10" Opacity="0.7" VerticalAlignment="Center"/>
                 </StackPanel>

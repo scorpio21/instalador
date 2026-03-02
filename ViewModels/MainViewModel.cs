@@ -1,8 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using System.Windows.Input;
 using Instalador.Helpers;
 using Instalador.Models;
@@ -23,6 +25,11 @@ namespace Instalador.ViewModels
         private string _gitBranch = "Git: Desconocido";
         private bool _hasGitChanges;
         private bool _isProjectReady;
+        private double _progresoTotal;
+        private string _tiempoTranscurrido = "00:00";
+        private bool _estaProcesando;
+        private readonly Stopwatch _cronometro = new Stopwatch();
+        private readonly DispatcherTimer _timerTiempo;
 
         public MainViewModel(IConfigService configService, IGitService gitService, IBuildService buildService, IInnoSetupService innoService, INotificationService notificationService)
         {
@@ -47,6 +54,9 @@ namespace Instalador.ViewModels
             InstallerCommand = new RelayCommand(async _ => await EjecutarInstaller());
             RunAllCommand = new RelayCommand(async _ => await EjecutarTodo());
             
+            _timerTiempo = new DispatcherTimer { Interval = System.TimeSpan.FromSeconds(1) };
+            _timerTiempo.Tick += (s, e) => TiempoTranscurrido = _cronometro.Elapsed.ToString(@"mm\:ss");
+
             _ = ActualizarEstadoGit();
         }
 
@@ -88,6 +98,47 @@ namespace Instalador.ViewModels
             set => SetProperty(ref _isProjectReady, value);
         }
 
+        public double ProgresoTotal
+        {
+            get => _progresoTotal;
+            set
+            {
+                if (SetProperty(ref _progresoTotal, value))
+                {
+                    OnPropertyChanged(nameof(ProgresoIndeterminado));
+                }
+            }
+        }
+
+        public string TiempoTranscurrido
+        {
+            get => _tiempoTranscurrido;
+            set
+            {
+                if (SetProperty(ref _tiempoTranscurrido, value))
+                {
+                    OnPropertyChanged(nameof(TiempoDisplay));
+                }
+            }
+        }
+
+        public bool EstaProcesando
+        {
+            get => _estaProcesando;
+            set
+            {
+                if (SetProperty(ref _estaProcesando, value))
+                {
+                    OnPropertyChanged(nameof(TiempoDisplay));
+                    OnPropertyChanged(nameof(ProgresoIndeterminado));
+                }
+            }
+        }
+
+        public bool ProgresoIndeterminado => EstaProcesando && ProgresoTotal <= 0;
+
+        public string TiempoDisplay => $"{TiempoTranscurrido} {(EstaProcesando ? "Procesando" : "Terminado")}";
+
         public string AppVersionDisplay => $"v{Instalador.Views.MainWindow.AppVersion} PRO";
 
         public ICommand LimpiarCommand { get; }
@@ -99,6 +150,29 @@ namespace Instalador.ViewModels
         public ICommand InstallerCommand { get; }
         public ICommand RunAllCommand { get; }
 
+        private bool IniciarCronometroSiNecesario()
+        {
+            if (_cronometro.IsRunning) return false;
+
+            ProgresoTotal = 0;
+            TiempoTranscurrido = "00:00";
+            EstaProcesando = true;
+            _cronometro.Restart();
+            _timerTiempo.Start();
+            return true;
+        }
+
+        private void DetenerCronometroSiCorresponde(bool iniciadoPorEstaAccion)
+        {
+            if (!iniciadoPorEstaAccion) return;
+
+            _timerTiempo.Stop();
+            _cronometro.Stop();
+            TiempoTranscurrido = _cronometro.Elapsed.ToString(@"mm\:ss");
+            ProgresoTotal = 100;
+            EstaProcesando = false;
+        }
+
         private async Task ActualizarEstadoGit()
         {
             if (ProyectoSeleccionado == null) return;
@@ -109,6 +183,7 @@ namespace Instalador.ViewModels
 
         private async Task EjecutarLimpiar()
         {
+            bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
             string publishDir = GetAbsolutePublishDir();
             AddLog($"Iniciando limpieza de {ProyectoSeleccionado.Nombre}...");
@@ -131,21 +206,27 @@ namespace Instalador.ViewModels
                 AddLog("La carpeta ya estaba limpia (no se detectó directorio).");
             }
             IsProjectReady = true;
+            DetenerCronometroSiCorresponde(iniciar);
             await Task.CompletedTask;
         }
 
         private async Task EjecutarBuild()
         {
+            bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
             AddLog("Compilando proyecto...");
             await _buildService.RunCommandAsync("dotnet", "build", ProyectoSeleccionado.RutaProyecto, AddLog);
+            DetenerCronometroSiCorresponde(iniciar);
         }
 
         private async Task EjecutarPublish()
         {
+            bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
             AddLog("Publicando proyecto (flags avanzados)...");
             await _buildService.RunPublishAsync(ProyectoSeleccionado, AddLog);
+            await CopiarRecursos();
+            DetenerCronometroSiCorresponde(iniciar);
         }
 
         private async Task CopiarRecursos()
@@ -205,22 +286,57 @@ namespace Instalador.ViewModels
 
         private async Task EjecutarZipPortable()
         {
+            bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
             AddLog("Generando ZIP Portable...");
+            await CopiarRecursos();
             string absolutePublish = GetAbsolutePublishDir();
             string sourceDir = System.IO.Path.Combine(absolutePublish, "win-x64-singlefile");
             string zipPortable = System.IO.Path.Combine(absolutePublish, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_Portable.zip");
             await ComprimirCarpetaAsync(sourceDir, zipPortable);
+            DetenerCronometroSiCorresponde(iniciar);
         }
 
         private async Task EjecutarZipSingleFile()
         {
+            bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
             AddLog("Generando ZIP Single-File...");
+            await CopiarRecursos();
             string absolutePublish = GetAbsolutePublishDir();
             string sourceDir = System.IO.Path.Combine(absolutePublish, "win-x64-singlefile");
             string zipWinX64 = System.IO.Path.Combine(absolutePublish, $"{ProyectoSeleccionado.Nombre}_{ProyectoSeleccionado.VersionInstalador}_win-x64_singlefile.zip");
             await ComprimirCarpetaAsync(sourceDir, zipWinX64);
+            DetenerCronometroSiCorresponde(iniciar);
+        }
+
+        private string DetectarExePublicado(string publishDir)
+        {
+            try
+            {
+                if (!Directory.Exists(publishDir)) return "";
+
+                var exeFiles = Directory.GetFiles(publishDir, "*.exe", SearchOption.TopDirectoryOnly);
+                if (exeFiles.Length == 0) return "";
+
+                if (ProyectoSeleccionado != null)
+                {
+                    string esperado = Path.Combine(publishDir, $"{ProyectoSeleccionado.Nombre}.exe");
+                    if (File.Exists(esperado)) return Path.GetFileName(esperado);
+                }
+
+                if (exeFiles.Length == 1) return Path.GetFileName(exeFiles[0]);
+
+                var candidato = exeFiles.FirstOrDefault(f =>
+                    !string.Equals(Path.GetFileName(f), "vshost.exe", System.StringComparison.OrdinalIgnoreCase) &&
+                    !Path.GetFileName(f).Contains("WebView2", System.StringComparison.OrdinalIgnoreCase));
+
+                return candidato != null ? Path.GetFileName(candidato) : Path.GetFileName(exeFiles[0]);
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         private async Task ComprimirCarpetaAsync(string sourceDir, string destZip)
@@ -249,6 +365,7 @@ namespace Instalador.ViewModels
 
         private async Task EjecutarInstaller()
         {
+            bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
             AddLog("Preparando instalador de Inno Setup...");
             string issPath = Path.Combine(ProyectoSeleccionado.RutaProyecto, "installer.iss");
@@ -258,9 +375,18 @@ namespace Instalador.ViewModels
             {
                 string absolutePublish = GetAbsolutePublishDir();
                 string publishDirStr = Path.Combine(absolutePublish, "win-x64-singlefile");
+
+                await CopiarRecursos();
+
+                string exePublicado = DetectarExePublicado(publishDirStr);
+                if (string.IsNullOrWhiteSpace(exePublicado))
+                {
+                    AddLog($"[ERROR] No se detectó ningún .exe en: {publishDirStr}. Ejecuta 'Publicar single-file' primero.");
+                    return;
+                }
                 
                 // La salida del Setup(.exe) generada por Inno irá a RutaPublicacion (publish/)
-                string args = $"/O\"{absolutePublish}\" /dMyAppName=\"{ProyectoSeleccionado.Nombre}\" /dMyAppVersion=\"{ProyectoSeleccionado.VersionInstalador}\" /dMyAppExeName=\"{ProyectoSeleccionado.Nombre}.exe\" /dPublishDir=\"{publishDirStr}\" \"{issPath}\"";
+                string args = $"/O\"{absolutePublish}\" /dMyAppName=\"{ProyectoSeleccionado.Nombre}\" /dMyAppVersion=\"{ProyectoSeleccionado.VersionInstalador}\" /dMyAppExeName=\"{exePublicado}\" /dPublishDir=\"{publishDirStr}\" \"{issPath}\"";
                 
                 AddLog("Compilando con ISCC.exe...");
                 bool ok = await _buildService.RunCommandAsync(_config.RutaInnoSetup, args, ProyectoSeleccionado.RutaProyecto, AddLog);
@@ -272,18 +398,47 @@ namespace Instalador.ViewModels
             {
                  AddLog("[ERROR] Ruta a Inno Setup (ISCC.exe) no configurada. Ve a Ajustes y dale a Auto-Detectar.");
             }
+
+            DetenerCronometroSiCorresponde(iniciar);
         }
 
         private async Task EjecutarTodo()
         {
-            await EjecutarLimpiar();
-            await EjecutarBuild();
-            await EjecutarPublish();
-            await CopiarRecursos();
-            await EjecutarInstaller();
-            await EjecutarZipPortable();
-            await EjecutarZipSingleFile();
-            _notificationService.Notify("Proceso Completado", "Todas las tareas han finalizado con éxito.");
+            ProgresoTotal = 0;
+            TiempoTranscurrido = "00:00";
+            EstaProcesando = true;
+            _cronometro.Restart();
+            _timerTiempo.Start();
+
+            try
+            {
+                await EjecutarLimpiar();
+                ProgresoTotal = 10;
+
+                await EjecutarBuild();
+                ProgresoTotal = 25;
+
+                await EjecutarPublish();
+                ProgresoTotal = 55;
+
+                await EjecutarInstaller();
+                ProgresoTotal = 80;
+
+                await EjecutarZipPortable();
+                ProgresoTotal = 90;
+
+                await EjecutarZipSingleFile();
+                ProgresoTotal = 100;
+
+                _notificationService.Notify("Proceso Completado", "Todas las tareas han finalizado con éxito.");
+            }
+            finally
+            {
+                _timerTiempo.Stop();
+                _cronometro.Stop();
+                TiempoTranscurrido = _cronometro.Elapsed.ToString(@"mm\:ss");
+                EstaProcesando = false;
+            }
         }
 
         private string GetAbsolutePublishDir()
