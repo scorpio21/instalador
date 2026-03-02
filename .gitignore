@@ -14,5 +14,4 @@ publish/
 *.log
 
 # Configuración local
-config.json
 crash_log.txt
