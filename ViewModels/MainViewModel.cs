@@ -19,6 +19,7 @@ namespace Instalador.ViewModels
         private readonly IBuildService _buildService;
         private readonly IInnoSetupService _innoService;
         private readonly INotificationService _notificationService;
+        private readonly ILoggingService _loggingService;
 
         private Config _config;
         private ProyectoConfig? _proyectoSeleccionado;
@@ -32,19 +33,22 @@ namespace Instalador.ViewModels
         private readonly Stopwatch _cronometro = new Stopwatch();
         private readonly DispatcherTimer _timerTiempo;
 
-        public MainViewModel(IConfigService configService, IGitService gitService, IBuildService buildService, IInnoSetupService innoService, INotificationService notificationService)
+        public MainViewModel(IConfigService configService, IGitService gitService, IBuildService buildService, IInnoSetupService innoService, INotificationService notificationService, ILoggingService loggingService)
         {
             _configService = configService;
             _gitService = gitService;
             _buildService = buildService;
             _innoService = innoService;
             _notificationService = notificationService;
+            _loggingService = loggingService;
 
             _config = _configService.CargarConfig();
             _proyectoSeleccionado = _configService.GetProyectoActual(_config);
 
-            LogEntries = new ObservableCollection<LogEntry>();
+            LogEntries = new ObservableCollection<LogEntry>(_loggingService.GetLogs());
             Proyectos = new ObservableCollection<ProyectoConfig>(_config.Proyectos);
+
+            AddLog("Aplicación iniciada.");
 
             LimpiarCommand = new RelayCommand(async _ => await EjecutarLimpiar());
             ActualizarGitCommand = new RelayCommand(async _ => await ActualizarEstadoGit());
@@ -461,8 +465,27 @@ namespace Instalador.ViewModels
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                LogEntries.Insert(0, new LogEntry { Hora = DateTime.Now.ToString("HH:mm:ss"), Mensaje = mensaje });
+                var logEntry = new LogEntry 
+                { 
+                    Hora = DateTime.Now.ToString("HH:mm:ss"), 
+                    Mensaje = mensaje,
+                    FechaCompleta = DateTime.Now
+                };
+                
+                LogEntries.Insert(0, logEntry);
+                _loggingService.AddLog(mensaje);
+                
+                // Guardar logs cada 10 entradas o en errores críticos
+                if (LogEntries.Count == 1 || LogEntries.Count % 10 == 0 || mensaje.Contains("[ERROR]"))
+                {
+                    _loggingService.SaveToFile();
+                }
             });
+        }
+
+        public void SaveLogsOnExit()
+        {
+            _loggingService?.SaveToFile();
         }
 
         public void ActualizarConfig(Config config)
@@ -471,11 +494,5 @@ namespace Instalador.ViewModels
             // No reseteamos Proyectos aquí porque ya se hace en MainWindow.xaml.cs
             Console.WriteLine($"[MainVM] Configuración sincronizada. Proyectos: {_config.Proyectos.Count}");
         }
-    }
-
-    public class LogEntry
-    {
-        public string Hora { get; set; } = "";
-        public string Mensaje { get; set; } = "";
     }
 }

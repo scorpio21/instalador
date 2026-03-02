@@ -10,7 +10,7 @@ namespace Instalador.Views
 {
     public partial class MainWindow : Window
     {
-        public const string AppVersion = "1.1.1";
+        public const string AppVersion = "1.1.2";
         private MainViewModel _viewModel;
         private DispatcherTimer timerHora = new DispatcherTimer();
 
@@ -25,13 +25,25 @@ namespace Instalador.Views
             var buildService = new BuildService();
             var innoService = new InnoSetupService();
             var notificationService = new NotificationService();
+            var loggingService = new LoggingService();
 
-            _viewModel = new MainViewModel(configService, gitService, buildService, innoService, notificationService);
+            _viewModel = new MainViewModel(configService, gitService, buildService, innoService, notificationService, loggingService);
             this.DataContext = _viewModel;
 
             timerHora.Interval = TimeSpan.FromSeconds(1);
             timerHora.Tick += (s, e) => TxtHora.Text = DateTime.Now.ToString("HH:mm:ss");
             timerHora.Start();
+            
+            this.Closing += Window_Closing;
+        }
+
+        private void Window_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Guardar logs al cerrar la aplicación
+            if (_viewModel != null)
+            {
+                _viewModel.SaveLogsOnExit();
+            }
         }
 
         private void BtnSalir_Click(object sender, RoutedEventArgs e) => Close();
@@ -60,7 +72,7 @@ namespace Instalador.Views
 
         private void MenuInstrucciones_Click(object sender, RoutedEventArgs e)
         {
-            string msg = "MANUAL DE USO RÁPIDO (v1.1.1):\n\n" +
+            string msg = "MANUAL DE USO RÁPIDO (v1.1.2):\n\n" +
                          "1. Selecciona tu proyecto en el selector superior.\n" +
                          "2. Usa 'Limpiar' para preparar el entorno.\n" +
                          "3. 'Compilar' verifica que el código sea correcto.\n" +
