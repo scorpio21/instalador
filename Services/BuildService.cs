@@ -9,7 +9,7 @@ namespace Instalador.Services
     public interface IBuildService
     {
         Task<bool> RunCommandAsync(string fileName, string args, string workingDir, Action<string> onLineReceived);
-        Task RunPublishAsync(ProyectoConfig proyecto, Action<string> onLog);
+        Task RunPublishAsync(ProyectoConfig proyecto, Action<string> onLog, string configuration = "Release");
     }
 
     public class BuildService : IBuildService
@@ -52,7 +52,7 @@ namespace Instalador.Services
             });
         }
 
-        public async Task RunPublishAsync(ProyectoConfig p, Action<string> onLog)
+        public async Task RunPublishAsync(ProyectoConfig p, Action<string> onLog, string configuration = "Release")
         {
             string outputDir = System.IO.Path.Combine(p.RutaPublicacion, "win-x64-singlefile");
             string flags = "-r win-x64 --self-contained true /p:PublishSingleFile=true";
@@ -61,7 +61,7 @@ namespace Instalador.Services
             if (p.Trimmed) flags += " /p:PublishTrimmed=true";
             if (p.Compressed) flags += " /p:EnableCompressionInSingleFile=true";
 
-            string args = $"publish -c Release -o \"{outputDir}\" {flags}";
+            string args = $"publish -c {configuration} -o \"{outputDir}\" {flags}";
             await RunCommandAsync("dotnet", args, p.RutaProyecto, onLog);
         }
     }

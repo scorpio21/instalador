@@ -126,14 +126,15 @@
 
                 <MenuItem x:Name="MenuCombo">
                     <MenuItem.Header>
-                        <ComboBox x:Name="ComboConfig" Width="100" VerticalContentAlignment="Center" Background="Transparent" Foreground="White" BorderThickness="0" Margin="5,0">
-                            <ComboBoxItem IsSelected="True">
+                        <ComboBox x:Name="ComboConfig" Width="100" VerticalContentAlignment="Center" Background="Transparent" Foreground="White" BorderThickness="0" Margin="5,0"
+                                  SelectedValue="{Binding BuildConfiguration}" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="Release" IsSelected="True">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconPlay}" Fill="White" Width="12" Height="12" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Release" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </ComboBoxItem>
-                            <ComboBoxItem>
+                            <ComboBoxItem Tag="Debug">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconCompilar}" Fill="#FFB900" Width="12" Height="12" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Debug" VerticalAlignment="Center"/>

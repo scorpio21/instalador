@@ -28,6 +28,7 @@ namespace Instalador.ViewModels
         private double _progresoTotal;
         private string _tiempoTranscurrido = "00:00";
         private bool _estaProcesando;
+        private string _buildConfiguration = "Release";
         private readonly Stopwatch _cronometro = new Stopwatch();
         private readonly DispatcherTimer _timerTiempo;
 
@@ -139,6 +140,12 @@ namespace Instalador.ViewModels
 
         public string TiempoDisplay => $"{TiempoTranscurrido} {(EstaProcesando ? "Procesando" : "Terminado")}";
 
+        public string BuildConfiguration
+        {
+            get => _buildConfiguration;
+            set => SetProperty(ref _buildConfiguration, value);
+        }
+
         public string AppVersionDisplay => $"v{Instalador.Views.MainWindow.AppVersion} PRO";
 
         public ICommand LimpiarCommand { get; }
@@ -223,8 +230,8 @@ namespace Instalador.ViewModels
         {
             bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
-            AddLog("Publicando proyecto (flags avanzados)...");
-            await _buildService.RunPublishAsync(ProyectoSeleccionado, AddLog);
+            AddLog($"Publicando proyecto ({BuildConfiguration})...");
+            await _buildService.RunPublishAsync(ProyectoSeleccionado, AddLog, BuildConfiguration);
             await CopiarRecursos();
             DetenerCronometroSiCorresponde(iniciar);
         }
