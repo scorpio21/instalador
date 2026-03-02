@@ -4,6 +4,16 @@ Todos los cambios notables en este proyecto serán documentados en este archivo 
 
 ---
 
+## v1.1.3 - 2026-03-02
+
+### ✨ Añadido (Validación)
+
+- **✅ Validación en tiempo real**: Las rutas de proyecto/publicación/ISCC.exe ahora muestran feedback visual inmediato (borde verde/amarillo/rojo).
+- **⚠️ Advertencia .csproj**: Se muestra aviso si la carpeta del proyecto no contiene un archivo `.csproj`.
+- **🧵 Validación asíncrona**: La validación se ejecuta en segundo plano para no bloquear la interfaz.
+
+---
+
 ## v1.1.2 - 2026-03-02
 
 ### ✨ Añadido (Logs)

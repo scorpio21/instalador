@@ -10,7 +10,7 @@ namespace Instalador.Views
 {
     public partial class MainWindow : Window
     {
-        public const string AppVersion = "1.1.2";
+        public const string AppVersion = "1.1.3";
         private MainViewModel _viewModel;
         private DispatcherTimer timerHora = new DispatcherTimer();
 

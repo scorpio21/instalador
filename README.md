@@ -2,7 +2,7 @@
 
 ![Captura de pantalla del programa](img/menu.png)
 
-**Versión actual: v1.1.2** | ![Licencia MIT](https://img.shields.io/badge/License-MIT-green.svg)
+**Versión actual: v1.1.3** | ![Licencia MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
 **Elevate your deployment workflow.** Una solución integral de escritorio diseñada para automatizar el ciclo de vida de empaquetado y distribución de aplicaciones .NET con una experiencia de usuario excepcional.
 
@@ -21,7 +21,7 @@ Este ecosistema automatiza tareas repetitivas y críticas de despliegue, elimina
 * **📦 Empaquetado Profesional**: Generación de Single-File, ZIP y archivos de instalación mediante **Inno Setup**.
 * **🔔 Notificaciones de Sistema**: Avisos nativos (Toast) al finalizar procesos largos.
 * **� Logs Persistentes**: El historial se guarda automáticamente en `%AppData%\\Instalador\\logs`.
-* **�🛠️ Herramientas de Robustez**: Auto-detección de compiladores y validación de rutas en tiempo real.
+* **��️ Herramientas de Robustez**: Auto-detección de compiladores y validación de rutas en tiempo real.
 * **🔗 Ecosistema Git Integrado**: Monitorización de ramas y cambios pendientes directamente en la aplicación.
 * **❓ Soporte y Ayuda**: Manual de usuario integrado y centro de ayuda.
 

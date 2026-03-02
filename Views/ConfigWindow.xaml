@@ -65,16 +65,24 @@
                     <TextBlock Text="Ruta del Proyecto (.csproj)" Foreground="#999" FontSize="11" Margin="0,0,0,5"/>
                     <Grid Margin="0,0,0,15">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                        <TextBox Text="{Binding RutaProyecto, UpdateSourceTrigger=PropertyChanged}" Height="35"/>
+                        <TextBox Text="{Binding RutaProyecto, UpdateSourceTrigger=PropertyChanged}" Height="35"
+                                 BorderBrush="{Binding DataContext.EstadoRutaProyecto, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource EstadoToBorderBrushConverter}}"/>
                         <Button Grid.Column="1" Content="..." Width="40" Click="BtnSeleccionarProyecto_Click" Margin="5,0,0,0"/>
                     </Grid>
+                    <TextBlock Text="{Binding DataContext.MensajeRutaProyecto, RelativeSource={RelativeSource AncestorType=Window}}"
+                               Foreground="#FFB900" FontSize="11" Margin="0,-10,0,15"
+                               Visibility="{Binding DataContext.MensajeRutaProyecto, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource StringNotEmptyToVisibilityConverter}}"/>
 
                     <TextBlock Text="Directorio de Publicación" Foreground="#999" FontSize="11" Margin="0,0,0,5"/>
                     <Grid Margin="0,0,0,15">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                        <TextBox Text="{Binding RutaPublicacion, UpdateSourceTrigger=PropertyChanged}" Height="35"/>
+                        <TextBox Text="{Binding RutaPublicacion, UpdateSourceTrigger=PropertyChanged}" Height="35"
+                                 BorderBrush="{Binding DataContext.EstadoRutaPublicacion, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource EstadoToBorderBrushConverter}}"/>
                         <Button Grid.Column="1" Content="..." Width="40" Click="BtnSeleccionarPublicacion_Click" Margin="5,0,0,0"/>
                     </Grid>
+                    <TextBlock Text="{Binding DataContext.MensajeRutaPublicacion, RelativeSource={RelativeSource AncestorType=Window}}"
+                               Foreground="#FFB900" FontSize="11" Margin="0,-10,0,15"
+                               Visibility="{Binding DataContext.MensajeRutaPublicacion, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource StringNotEmptyToVisibilityConverter}}"/>
 
                     <TextBlock Text="OPCIONES DE PUBLICACIÓN" Foreground="#999" FontSize="11" Margin="0,10,0,5"/>
                     <Border Background="#2D2D2D" Padding="15" CornerRadius="4" Margin="0,0,0,15">
@@ -96,12 +104,16 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Text="{Binding DataContext.RutaInnoSetup, RelativeSource={RelativeSource AncestorType=Window}, UpdateSourceTrigger=PropertyChanged}" Height="35"/>
+                        <TextBox Text="{Binding DataContext.RutaInnoSetup, RelativeSource={RelativeSource AncestorType=Window}, UpdateSourceTrigger=PropertyChanged}" Height="35"
+                                 BorderBrush="{Binding DataContext.EstadoRutaInnoSetup, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource EstadoToBorderBrushConverter}}"/>
                         <Button Grid.Column="1" Content="..." Width="40" Click="BtnSeleccionarInno_Click" Margin="5,0,0,0"/>
                         <Button Grid.Column="2" Content="Auto-Detectar" Style="{StaticResource SecondaryButton}" 
                                 Command="{Binding DataContext.DetectCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
                                 Margin="5,0,0,0" Padding="10,0"/>
                     </Grid>
+                    <TextBlock Text="{Binding DataContext.MensajeRutaInnoSetup, RelativeSource={RelativeSource AncestorType=Window}}"
+                               Foreground="#FFB900" FontSize="11" Margin="0,5,0,0"
+                               Visibility="{Binding DataContext.MensajeRutaInnoSetup, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource StringNotEmptyToVisibilityConverter}}"/>
                 </StackPanel>
             </ScrollViewer>
 

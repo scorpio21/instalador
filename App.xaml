@@ -8,6 +8,8 @@
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <helpers:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <helpers:EstadoToBorderBrushConverter x:Key="EstadoToBorderBrushConverter"/>
+        <helpers:StringNotEmptyToVisibilityConverter x:Key="StringNotEmptyToVisibilityConverter"/>
         <!-- Forzar colores oscuros globales -->
         <SolidColorBrush x:Key="PrimaryBlue" Color="#007ACC"/>
         <SolidColorBrush x:Key="DarkBg" Color="#181818"/>
