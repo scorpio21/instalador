@@ -42,6 +42,7 @@ namespace Instalador.ViewModels
             _notificationService = notificationService;
             _loggingService = loggingService;
 
+            _loggingService.Clear();
             _config = _configService.CargarConfig();
             _proyectoSeleccionado = _configService.GetProyectoActual(_config);
 
@@ -49,6 +50,7 @@ namespace Instalador.ViewModels
             Proyectos = new ObservableCollection<ProyectoConfig>(_config.Proyectos);
 
             AddLog("Aplicación iniciada.");
+            AddLog($"Config cargada desde: {System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Instalador", Models.Config.ArchivoConfig)}");
 
             LimpiarCommand = new RelayCommand(async _ => await EjecutarLimpiar());
             ActualizarGitCommand = new RelayCommand(async _ => await ActualizarEstadoGit());
@@ -226,7 +228,7 @@ namespace Instalador.ViewModels
             bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
             AddLog("Compilando proyecto...");
-            await _buildService.RunCommandAsync("dotnet", "build", ProyectoSeleccionado.RutaProyecto, AddLog);
+            await _buildService.RunBuildAsync(ProyectoSeleccionado, AddLog, BuildConfiguration);
             DetenerCronometroSiCorresponde(iniciar);
         }
 
@@ -248,6 +250,10 @@ namespace Instalador.ViewModels
             await Task.Run(() => 
             {
                 string sourceProject = ProyectoSeleccionado.RutaProyecto;
+                if (!Directory.Exists(sourceProject))
+                {
+                    sourceProject = Path.GetDirectoryName(sourceProject) ?? sourceProject;
+                }
                 string destDir = System.IO.Path.Combine(GetAbsolutePublishDir(), "win-x64-singlefile");
                 
                 try 
@@ -379,7 +385,41 @@ namespace Instalador.ViewModels
             bool iniciar = IniciarCronometroSiNecesario();
             if (ProyectoSeleccionado == null) return;
             AddLog("Preparando instalador de Inno Setup...");
-            string issPath = Path.Combine(ProyectoSeleccionado.RutaProyecto, "installer.iss");
+
+            var directorioProyecto = ProyectoSeleccionado.RutaProyecto;
+            if (!Directory.Exists(directorioProyecto))
+            {
+                directorioProyecto = Path.GetDirectoryName(directorioProyecto) ?? directorioProyecto;
+            }
+
+            try
+            {
+                var icoDestino = Path.Combine(directorioProyecto, "img", "ico", "Installer.ico");
+                if (!File.Exists(icoDestino))
+                {
+                    var baseDirInstalador = AppDomain.CurrentDomain.BaseDirectory;
+                    var icoOrigen = Path.Combine(baseDirInstalador, "img", "ico", "Installer.ico");
+                    if (File.Exists(icoOrigen))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(icoDestino) ?? directorioProyecto);
+                        File.Copy(icoOrigen, icoDestino, true);
+                        AddLog("Icono del instalador copiado a img\\ico\\Installer.ico");
+                    }
+                    else
+                    {
+                        AddLog("[WARN] No se encontró img\\ico\\Installer.ico en el instalador. Se generará sin icono.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AddLog("[WARN] No se pudo preparar el icono del instalador: " + ex.Message);
+            }
+
+            var issBuildPath = Path.Combine(directorioProyecto, "build", "installer.iss");
+            string issPath = File.Exists(issBuildPath)
+                ? issBuildPath
+                : Path.Combine(directorioProyecto, "installer.iss");
             _innoService.GenerarScript(ProyectoSeleccionado, issPath);
             
             if (!string.IsNullOrEmpty(_config.RutaInnoSetup) && File.Exists(_config.RutaInnoSetup))
@@ -400,7 +440,7 @@ namespace Instalador.ViewModels
                 string args = $"/O\"{absolutePublish}\" /dMyAppName=\"{ProyectoSeleccionado.Nombre}\" /dMyAppVersion=\"{ProyectoSeleccionado.VersionInstalador}\" /dMyAppExeName=\"{exePublicado}\" /dPublishDir=\"{publishDirStr}\" \"{issPath}\"";
                 
                 AddLog("Compilando con ISCC.exe...");
-                bool ok = await _buildService.RunCommandAsync(_config.RutaInnoSetup, args, ProyectoSeleccionado.RutaProyecto, AddLog);
+                bool ok = await _buildService.RunCommandAsync(_config.RutaInnoSetup, args, directorioProyecto, AddLog);
                 
                 if (ok) AddLog("Instalador .exe generado correctamente en carpeta publish.");
                 else AddLog("[ERROR] Fallo al compilar el instalador con Inno Setup.");

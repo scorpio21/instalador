@@ -18,6 +18,16 @@
       "Trimmed": false,
       "Compressed": true
     }
+    ,
+    {
+      "Nombre": "CreadorAyudas",
+      "RutaProyecto": "E:\\xampp\\htdocs\\CreadorAyudas\\HelpProjectDesigner.sln",
+      "RutaPublicacion": "E:\\xampp\\htdocs\\CreadorAyudas\\publish",
+      "VersionInstalador": "0.0.1",
+      "ReadyToRun": true,
+      "Trimmed": false,
+      "Compressed": true
+    }
   ],
   "UltimoProyectoSeleccionado": "Instalador2",
   "RutaInnoSetup": "C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe",

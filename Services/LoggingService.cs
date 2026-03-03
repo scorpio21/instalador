@@ -10,6 +10,7 @@ namespace Instalador.Services
     public interface ILoggingService
     {
         void AddLog(string mensaje);
+        void Clear();
         void SaveToFile();
         void LoadFromFile();
         List<LogEntry> GetLogs();
@@ -25,19 +26,40 @@ namespace Instalador.Services
 
         public LoggingService()
         {
-            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            _logsDirectory = Path.Combine(appDataPath, "Instalador", "logs");
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            var logsDirPreferido = Path.Combine(baseDir, "Log");
+            var logsDirFallback = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Instalador", "logs");
+
+            _logsDirectory = ResolverDirectorioLogs(logsDirPreferido, logsDirFallback);
             _logFilePath = Path.Combine(_logsDirectory, $"instalador_{DateTime.Now:yyyyMMdd}.log");
-            
-            EnsureLogsDirectoryExists();
+
             LoadFromFile();
         }
 
-        private void EnsureLogsDirectoryExists()
+        private static string ResolverDirectorioLogs(string preferido, string fallback)
         {
-            if (!Directory.Exists(_logsDirectory))
+            if (TryCrearDirectorio(preferido))
             {
-                Directory.CreateDirectory(_logsDirectory);
+                return preferido;
+            }
+
+            TryCrearDirectorio(fallback);
+            return fallback;
+        }
+
+        private static bool TryCrearDirectorio(string ruta)
+        {
+            try
+            {
+                if (!Directory.Exists(ruta))
+                {
+                    Directory.CreateDirectory(ruta);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -51,12 +73,39 @@ namespace Instalador.Services
             };
             
             _logs.Insert(0, logEntry);
+
+            AppendLogLineToFile(logEntry);
             
             // Mantener solo los últimos MaxLogEntries en memoria
             if (_logs.Count > MaxLogEntries)
             {
                 _logs.RemoveAt(_logs.Count - 1);
             }
+        }
+
+        private void AppendLogLineToFile(LogEntry logEntry)
+        {
+            try
+            {
+                // Rotar archivo si excede el tamaño máximo
+                if (File.Exists(_logFilePath) && new FileInfo(_logFilePath).Length > MaxFileSizeBytes)
+                {
+                    RotateLogFile();
+                }
+
+                var line = $"[{logEntry.FechaCompleta:yyyy-MM-dd HH:mm:ss}] {logEntry.Mensaje}{Environment.NewLine}";
+                File.AppendAllText(_logFilePath, line, Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                // Silencioso para no crear bucle de logs
+                Console.WriteLine($"Error guardando log: {ex.Message}");
+            }
+        }
+
+        public void Clear()
+        {
+            _logs.Clear();
         }
 
         public void SaveToFile()

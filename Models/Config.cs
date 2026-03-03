@@ -64,6 +64,47 @@ namespace Instalador.Models
             return Path.Combine(currentDir, ArchivoConfig);
         }
 
+        private static string? BuscarConfigLocalSubiendoDirectorios()
+        {
+            try
+            {
+                var dir = new DirectoryInfo(AppContext.BaseDirectory);
+                for (int i = 0; i < 6 && dir != null; i++)
+                {
+                    var candidate = Path.Combine(dir.FullName, ArchivoConfig);
+                    if (File.Exists(candidate))
+                    {
+                        return candidate;
+                    }
+
+                    dir = dir.Parent;
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static bool EsArchivoMasNuevo(string origen, string destino)
+        {
+            try
+            {
+                if (!File.Exists(origen)) return false;
+                if (!File.Exists(destino)) return true;
+
+                var fOrigen = File.GetLastWriteTimeUtc(origen);
+                var fDestino = File.GetLastWriteTimeUtc(destino);
+                return fOrigen > fDestino;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private static void AsegurarCarpetaConfigExiste(string fullPath)
         {
             string? dir = Path.GetDirectoryName(fullPath);
@@ -75,13 +116,16 @@ namespace Instalador.Models
         {
             try
             {
-                if (File.Exists(destino)) return;
+                // Primero intentar config junto al exe; si no existe, buscar subiendo carpetas (p.ej. raíz del repo)
+                string? legacy = BuscarConfigLocalSubiendoDirectorios();
+                if (string.IsNullOrWhiteSpace(legacy) || !File.Exists(legacy)) return;
 
-                string legacy = GetRutaConfigLegacy();
-                if (!File.Exists(legacy)) return;
-
-                AsegurarCarpetaConfigExiste(destino);
-                File.Copy(legacy, destino, overwrite: false);
+                // Si el legacy es más nuevo, sustituir el de AppData.
+                if (EsArchivoMasNuevo(legacy, destino))
+                {
+                    AsegurarCarpetaConfigExiste(destino);
+                    File.Copy(legacy, destino, overwrite: true);
+                }
             }
             catch
             {

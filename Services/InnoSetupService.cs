@@ -49,7 +49,9 @@ Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64os
+#ifexist ""img\\ico\\Installer.ico""
 SetupIconFile=img\ico\Installer.ico
+#endif
 
 [Languages]
 Name: ""spanish""; MessagesFile: ""compiler:Languages\Spanish.isl""
