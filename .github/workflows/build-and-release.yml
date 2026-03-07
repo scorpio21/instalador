@@ -80,8 +80,8 @@ jobs:
         run: |
           $version="${{ env.RELEASE_VERSION }}"
 
-          Compress-Archive -Force publish/win-x64/* publish/${{ env.APP_NAME }}_${version}_win-x64.zip
-          Compress-Archive -Force publish/win-x64/* publish/${{ env.APP_NAME }}_${version}_Portable.zip
+          Compress-Archive -Force publish/win-x64-singlefile/* publish/${{ env.APP_NAME }}_${version}_win-x64.zip
+          Compress-Archive -Force publish/win-x64singlefile/* publish/${{ env.APP_NAME }}_${version}_Portable.zip
 
       - name: Upload ZIP win-x64
         uses: actions/upload-artifact@v4
