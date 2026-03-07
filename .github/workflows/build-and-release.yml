@@ -103,33 +103,38 @@ jobs:
           name: Installer
           path: publish/*.exe
           retention-days: 7
-
+          
       - name: Preparar changelog
         if: github.event_name == 'workflow_dispatch' || startsWith(github.ref,'refs/tags/v')
         shell: pwsh
         run: |
-          $version="${{ env.RELEASE_VERSION }}"
-          $c=Get-Content CHANGELOG.md
-          $m=$c|Select-String "## 
+          $version = "${{ env.RELEASE_VERSION }}"
+          $c = Get-Content CHANGELOG.md
 
-\[$version\]
+          # Primero intentamos formato: "## [1.0.0]"
+          $pattern1 = "## \[$version\]"
+          $m = $c | Select-String $pattern1 -SimpleMatch | Select-Object -First 1
 
-" -SimpleMatch|Select-Object -First 1
-          if(!$m){$m=$c|Select-String "## v$version" -SimpleMatch|Select-Object -First 1}
-          if(!$m){exit 1}
+          # Si no existe, probamos "## v1.0.0"
+          if (-not $m) {
+            $pattern2 = "## v$version"
+            $m = $c | Select-String $pattern2 -SimpleMatch | Select-Object -First 1
+          }
 
-          $start=$m.LineNumber-1
-          $rest=$c[$start..($c.Length-1)]
-          $next=$rest|Select-String '^## ' | Select-Object -Skip 1 -First 1
+          if (-not $m) { exit 1 }
 
-          if($next){
-            $slice=$rest[0..($next.LineNumber-2)]
-          }else{
-            $slice=$rest
+          $start = $m.LineNumber - 1
+          $rest  = $c[$start..($c.Length-1)]
+          $next  = $rest | Select-String '^## ' | Select-Object -Skip 1 -First 1
+
+          if ($next) {
+            $slice = $rest[0..($next.LineNumber-2)]
+          } else {
+            $slice = $rest
           }
 
           Set-Content CHANGELOG_RELEASE.md $slice
-
+     
       - name: Create GitHub Release
         if: github.event_name == 'workflow_dispatch' || startsWith(github.ref,'refs/tags/v')
         uses: softprops/action-gh-release@v2
