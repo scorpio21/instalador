@@ -54,12 +54,13 @@ jobs:
       - name: Publish single-file win-x64
         run: >
           dotnet publish ${{ env.PROJECT_FILE }} -c Release -r win-x64 --self-contained true
-          /p:PublishSingleFile=true /p:PublishTrimmed=false -o publish/win-x64
+          /p:PublishSingleFile=true /p:PublishTrimmed=false -o publish/win-x64-singlefile
+
 
       - name: Copiar archivos necesarios
         shell: pwsh
         run: |
-          $dest = "publish/win-x64"
+          $dest = "publish/win-x64-singlefile"
 
           if (Test-Path "config.json") { Copy-Item config.json $dest -Force }
           if (Test-Path "img") { Copy-Item img $dest -Recurse -Force }
